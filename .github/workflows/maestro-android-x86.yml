@@ -59,11 +59,26 @@ jobs:
           maestro --version
           echo "$HOME/.maestro/bin" >> $GITHUB_PATH
 
-      - name: Verify Maestro test files exist
+      - name: Verify APK and test files exist
         run: |
+          echo "=== Checking for APK file ==="
+          if [ -f "Maestro/maestro-tests-Android/SafetyNet/Safetynet.apk" ]; then
+            echo "APK found!"
+            ls -lh Maestro/maestro-tests-Android/SafetyNet/Safetynet.apk
+          else
+            echo "ERROR: APK not found!"
+            find . -name "*.apk" || echo "No APK files found in repository"
+            exit 1
+          fi
+          
           echo "=== Checking for Maestro test files ==="
-          ls -la Maestro/maestro-tests-Android/SafetyNet/ || echo "Test directory not found!"
-          find Maestro/maestro-tests-Android/SafetyNet/ -name "*.yaml" -o -name "*.yml" || echo "No YAML test files found!"
+          if [ -d "Maestro/maestro-tests-Android/SafetyNet/" ]; then
+            ls -la Maestro/maestro-tests-Android/SafetyNet/
+            find Maestro/maestro-tests-Android/SafetyNet/ -name "*.yaml" -o -name "*.yml" || echo "No YAML test files found!"
+          else
+            echo "ERROR: Test directory not found!"
+            exit 1
+          fi
 
       - name: Start Android Emulator and Run Maestro Tests
         uses: reactivecircus/android-emulator-runner@v2
@@ -104,32 +119,49 @@ jobs:
             adb shell input keyevent 82
             adb shell input keyevent 4
             
+            echo "=== Checking APK file ==="
+            ls -lh Maestro/maestro-tests-Android/SafetyNet/Safetynet.apk
+            
             echo "=== Installing APK ==="
-            for i in 1 2 3; do echo "Installation attempt $i/3"; if adb install -r Maestro/maestro-tests-Android/SafetyNet/Safetynet.apk; then echo "APK installed successfully"; break; else echo "Installation failed, retrying..."; sleep 5; if [ "$i" = "3" ]; then echo "ERROR: Failed to install APK after 3 attempts"; exit 1; fi; fi; done
+            INSTALL_OUTPUT=$(adb install -r Maestro/maestro-tests-Android/SafetyNet/Safetynet.apk 2>&1)
+            INSTALL_EXIT=$?
+            echo "$INSTALL_OUTPUT"
+            
+            if [ $INSTALL_EXIT -ne 0 ]; then
+              echo "ERROR: APK installation failed with exit code $INSTALL_EXIT"
+              echo "Full output: $INSTALL_OUTPUT"
+              exit 1
+            fi
+            
+            if echo "$INSTALL_OUTPUT" | grep -q "Success"; then
+              echo "APK installed successfully"
+            else
+              echo "ERROR: Installation did not report success"
+              echo "Output: $INSTALL_OUTPUT"
+              exit 1
+            fi
             
             echo "=== Verifying APK installation ==="
             PACKAGE_NAME=$(adb shell pm list packages | grep safetynet || echo "")
-            if [ -z "$PACKAGE_NAME" ]; then echo "ERROR: Package not found after installation!"; adb shell pm list packages; exit 1; fi
+            if [ -z "$PACKAGE_NAME" ]; then
+              echo "ERROR: Package not found after installation!"
+              echo "All installed packages:"
+              adb shell pm list packages
+              exit 1
+            fi
             echo "Package found: $PACKAGE_NAME"
             
             echo "=== Checking Maestro installation ==="
-            which maestro || echo "Maestro not found in PATH!"
-            maestro --version || echo "Maestro version check failed!"
+            which maestro
+            maestro --version
             
             echo "=== Checking test files ==="
-            ls -la Maestro/maestro-tests-Android/SafetyNet/ || echo "Test directory not accessible!"
+            ls -la Maestro/maestro-tests-Android/SafetyNet/
             
             echo "=== Running Maestro tests ==="
-            maestro test Maestro/maestro-tests-Android/SafetyNet/ --format junit --output maestro-report.xml || EXIT_CODE=$?
+            maestro test Maestro/maestro-tests-Android/SafetyNet/ --format junit --output maestro-report.xml
             
-            if [ ! -z "$EXIT_CODE" ] && [ "$EXIT_CODE" != "0" ]; then
-              echo "=== Maestro tests failed with exit code: $EXIT_CODE ==="
-              echo "=== Checking Maestro logs ==="
-              ls -la ~/.maestro/tests/ || echo "No test logs found"
-              exit $EXIT_CODE
-            fi
-            
-            echo "=== Maestro tests completed successfully ==="
+            echo "=== Maestro tests completed ==="
 
       - name: Upload Maestro Test Results
         if: always()
