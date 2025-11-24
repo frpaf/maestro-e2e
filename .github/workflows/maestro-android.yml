@@ -63,18 +63,42 @@ jobs:
           api-level: 33
           arch: x86_64
           target: google_apis
+          profile: pixel_6
           force-avd-creation: false
-          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -memory 4096
           disable-animations: true
+          disable-spellchecker: true
+          disable-linux-hw-accel: false
           script: |
-            # Wait for emulator to be ready
-            adb wait-for-device
+            # Debug: Check ADB devices
+            echo "Checking ADB devices..."
+            adb devices -l
+
+            # Wait for device to be fully ready
+            echo "Waiting for device..."
+            adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done'
+
+            # Additional wait for system to stabilize
+            sleep 10
+
+            # Verify device is ready
+            echo "Device status:"
+            adb devices
+            adb shell getprop sys.boot_completed
+
+            # Unlock the device
             adb shell input keyevent 82
 
             # Install the APK
-            adb install Maestro/maestro-tests-Android/SafetyNet/Safetynet.apk
+            echo "Installing APK..."
+            adb install -r Maestro/maestro-tests-Android/SafetyNet/Safetynet.apk
+
+            # Verify APK installation
+            echo "Verifying APK installation..."
+            adb shell pm list packages | grep safetynet
 
             # Run Maestro tests
+            echo "Running Maestro tests..."
             maestro test Maestro/maestro-tests-Android/SafetyNet/
 
       - name: Upload Maestro Test Results
