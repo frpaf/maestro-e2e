@@ -59,6 +59,12 @@ jobs:
           maestro --version
           echo "$HOME/.maestro/bin" >> $GITHUB_PATH
 
+      - name: Verify Maestro test files exist
+        run: |
+          echo "=== Checking for Maestro test files ==="
+          ls -la Maestro/maestro-tests-Android/SafetyNet/ || echo "Test directory not found!"
+          find Maestro/maestro-tests-Android/SafetyNet/ -name "*.yaml" -o -name "*.yml" || echo "No YAML test files found!"
+
       - name: Start Android Emulator and Run Maestro Tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -106,8 +112,24 @@ jobs:
             if [ -z "$PACKAGE_NAME" ]; then echo "ERROR: Package not found after installation!"; adb shell pm list packages; exit 1; fi
             echo "Package found: $PACKAGE_NAME"
             
+            echo "=== Checking Maestro installation ==="
+            which maestro || echo "Maestro not found in PATH!"
+            maestro --version || echo "Maestro version check failed!"
+            
+            echo "=== Checking test files ==="
+            ls -la Maestro/maestro-tests-Android/SafetyNet/ || echo "Test directory not accessible!"
+            
             echo "=== Running Maestro tests ==="
-            maestro test Maestro/maestro-tests-Android/SafetyNet/ --format junit --output maestro-report.xml
+            maestro test Maestro/maestro-tests-Android/SafetyNet/ --format junit --output maestro-report.xml || EXIT_CODE=$?
+            
+            if [ ! -z "$EXIT_CODE" ] && [ "$EXIT_CODE" != "0" ]; then
+              echo "=== Maestro tests failed with exit code: $EXIT_CODE ==="
+              echo "=== Checking Maestro logs ==="
+              ls -la ~/.maestro/tests/ || echo "No test logs found"
+              exit $EXIT_CODE
+            fi
+            
+            echo "=== Maestro tests completed successfully ==="
 
       - name: Upload Maestro Test Results
         if: always()
@@ -127,6 +149,6 @@ jobs:
         with:
           name: maestro-logs
           path: |
-            **/.maestro/
+            ~/.maestro/logs/**/*
           retention-days: 7
           if-no-files-found: warn
