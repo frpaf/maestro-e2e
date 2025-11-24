@@ -73,11 +73,7 @@ jobs:
           disable-linux-hw-accel: false
           script: |
             set -e
-            
-            # Ensure Maestro is in PATH
             export PATH="$HOME/.maestro/bin:$PATH"
-            
-            # Kill any existing ADB server
             adb kill-server || true
             adb start-server
             sleep 2
@@ -86,34 +82,16 @@ jobs:
             adb devices -l
             
             echo "=== Waiting for device boot ==="
-            for i in $(seq 1 60); do
-              BOOT_COMPLETED=$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r' || echo "")
-              if [ "$BOOT_COMPLETED" = "1" ]; then
-                echo "Boot completed!"
-                break
-              fi
-              echo "Waiting for boot... ($i/60)"
-              sleep 2
-            done
+            i=0; while [ $i -lt 60 ]; do BOOT_COMPLETED=$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r' || echo ""); if [ "$BOOT_COMPLETED" = "1" ]; then echo "Boot completed!"; break; fi; echo "Waiting for boot... ($i/60)"; sleep 2; i=$((i+1)); done
             
             echo "=== Waiting for package manager ==="
-            for i in $(seq 1 30); do
-              if adb shell pm path android >/dev/null 2>&1; then
-                echo "Package manager ready!"
-                break
-              fi
-              echo "Waiting for package manager... ($i/30)"
-              sleep 2
-            done
+            i=0; while [ $i -lt 30 ]; do if adb shell pm path android >/dev/null 2>&1; then echo "Package manager ready!"; break; fi; echo "Waiting for package manager... ($i/30)"; sleep 2; i=$((i+1)); done
             
             echo "=== Stabilizing system ==="
             sleep 15
             
             echo "=== Device status ==="
-            if ! adb devices | grep -w device; then
-              echo "Device not online!"
-              exit 1
-            fi
+            if ! adb devices | grep -w device; then echo "Device not online!"; exit 1; fi
             echo "Boot completed: $(adb shell getprop sys.boot_completed)"
             
             echo "=== Unlocking device ==="
@@ -121,28 +99,11 @@ jobs:
             adb shell input keyevent 4
             
             echo "=== Installing APK ==="
-            for i in 1 2 3; do
-              echo "Installation attempt $i/3"
-              if adb install -r Maestro/maestro-tests-Android/SafetyNet/Safetynet.apk; then
-                echo "APK installed successfully"
-                break
-              else
-                echo "Installation failed, retrying..."
-                sleep 5
-                if [ "$i" = "3" ]; then
-                  echo "ERROR: Failed to install APK after 3 attempts"
-                  exit 1
-                fi
-              fi
-            done
+            for i in 1 2 3; do echo "Installation attempt $i/3"; if adb install -r Maestro/maestro-tests-Android/SafetyNet/Safetynet.apk; then echo "APK installed successfully"; break; else echo "Installation failed, retrying..."; sleep 5; if [ "$i" = "3" ]; then echo "ERROR: Failed to install APK after 3 attempts"; exit 1; fi; fi; done
             
             echo "=== Verifying APK installation ==="
             PACKAGE_NAME=$(adb shell pm list packages | grep safetynet || echo "")
-            if [ -z "$PACKAGE_NAME" ]; then
-              echo "ERROR: Package not found after installation!"
-              adb shell pm list packages
-              exit 1
-            fi
+            if [ -z "$PACKAGE_NAME" ]; then echo "ERROR: Package not found after installation!"; adb shell pm list packages; exit 1; fi
             echo "Package found: $PACKAGE_NAME"
             
             echo "=== Running Maestro tests ==="
