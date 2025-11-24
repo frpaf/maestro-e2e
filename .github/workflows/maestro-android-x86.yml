@@ -98,70 +98,19 @@ jobs:
             adb kill-server || true
             adb start-server
             sleep 2
-            
-            echo "=== Checking ADB devices ==="
-            adb devices -l
-            
-            echo "=== Waiting for device boot ==="
-            i=0; while [ $i -lt 60 ]; do BOOT_COMPLETED=$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r' || echo ""); if [ "$BOOT_COMPLETED" = "1" ]; then echo "Boot completed!"; break; fi; echo "Waiting for boot... ($i/60)"; sleep 2; i=$((i+1)); done
-            
-            echo "=== Waiting for package manager ==="
-            i=0; while [ $i -lt 30 ]; do if adb shell pm path android >/dev/null 2>&1; then echo "Package manager ready!"; break; fi; echo "Waiting for package manager... ($i/30)"; sleep 2; i=$((i+1)); done
-            
-            echo "=== Stabilizing system ==="
-            sleep 15
-            
-            echo "=== Device status ==="
-            if ! adb devices | grep -w device; then echo "Device not online!"; exit 1; fi
-            echo "Boot completed: $(adb shell getprop sys.boot_completed)"
-            
-            echo "=== Unlocking device ==="
-            adb shell input keyevent 82
-            adb shell input keyevent 4
-            
-            echo "=== Checking APK file ==="
-            ls -lh Maestro/maestro-tests-Android/SafetyNet/Safetynet.apk
-            
-            echo "=== Installing APK ==="
-            INSTALL_OUTPUT=$(adb install -r Maestro/maestro-tests-Android/SafetyNet/Safetynet.apk 2>&1)
-            INSTALL_EXIT=$?
-            echo "$INSTALL_OUTPUT"
-            
-            if [ $INSTALL_EXIT -ne 0 ]; then
-              echo "ERROR: APK installation failed with exit code $INSTALL_EXIT"
-              echo "Full output: $INSTALL_OUTPUT"
-              exit 1
-            fi
-            
-            if echo "$INSTALL_OUTPUT" | grep -q "Success"; then
-              echo "APK installed successfully"
-            else
-              echo "ERROR: Installation did not report success"
-              echo "Output: $INSTALL_OUTPUT"
-              exit 1
-            fi
-            
-            echo "=== Verifying APK installation ==="
-            PACKAGE_NAME=$(adb shell pm list packages | grep safetynet || echo "")
-            if [ -z "$PACKAGE_NAME" ]; then
-              echo "ERROR: Package not found after installation!"
-              echo "All installed packages:"
-              adb shell pm list packages
-              exit 1
-            fi
-            echo "Package found: $PACKAGE_NAME"
-            
-            echo "=== Checking Maestro installation ==="
-            which maestro
-            maestro --version
-            
-            echo "=== Checking test files ==="
-            ls -la Maestro/maestro-tests-Android/SafetyNet/
-            
-            echo "=== Running Maestro tests ==="
-            maestro test Maestro/maestro-tests-Android/SafetyNet/ --format junit --output maestro-report.xml
-            
-            echo "=== Maestro tests completed ==="
+            echo "=== Checking ADB devices ==="; adb devices -l
+            echo "=== Waiting for device boot ==="; i=0; while [ $i -lt 60 ]; do BOOT_COMPLETED=$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r' || echo ""); if [ "$BOOT_COMPLETED" = "1" ]; then echo "Boot completed!"; break; fi; echo "Waiting for boot... ($i/60)"; sleep 2; i=$((i+1)); done
+            echo "=== Waiting for package manager ==="; i=0; while [ $i -lt 30 ]; do if adb shell pm path android >/dev/null 2>&1; then echo "Package manager ready!"; break; fi; echo "Waiting for package manager... ($i/30)"; sleep 2; i=$((i+1)); done
+            echo "=== Stabilizing system ==="; sleep 15
+            echo "=== Device status ==="; if ! adb devices | grep -w device; then echo "Device not online!"; exit 1; fi; echo "Boot completed: $(adb shell getprop sys.boot_completed)"
+            echo "=== Unlocking device ==="; adb shell input keyevent 82; adb shell input keyevent 4
+            echo "=== Checking APK file ==="; ls -lh Maestro/maestro-tests-Android/SafetyNet/Safetynet.apk
+            echo "=== Installing APK ==="; adb install -r Maestro/maestro-tests-Android/SafetyNet/Safetynet.apk
+            echo "=== Verifying APK installation ==="; PACKAGE_NAME=$(adb shell pm list packages | grep safetynet || echo ""); if [ -z "$PACKAGE_NAME" ]; then echo "ERROR: Package not found!"; adb shell pm list packages; exit 1; fi; echo "Package found: $PACKAGE_NAME"
+            echo "=== Checking Maestro ==="; which maestro; maestro --version
+            echo "=== Checking test files ==="; ls -la Maestro/maestro-tests-Android/SafetyNet/
+            echo "=== Running Maestro tests ==="; maestro test Maestro/maestro-tests-Android/SafetyNet/ --format junit --output maestro-report.xml
+            echo "=== Tests completed ==="
 
       - name: Upload Maestro Test Results
         if: always()
