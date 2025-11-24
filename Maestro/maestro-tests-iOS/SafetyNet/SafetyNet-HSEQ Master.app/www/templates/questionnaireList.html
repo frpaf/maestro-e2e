@@ -1,0 +1,20 @@
+﻿<ion-view view-title="SafetyNet">
+    <ion-content overflow-scroll="true" class="has-subheader">
+        <ion-refresher pulling-text="{{getResourceText('LIT_PULL_TO_REFRESH')}}"
+                       on-refresh="updateQuestionnaire()">
+        </ion-refresher>
+        <ion-list>
+            <a class="item" ng-class="{ 'item-icon-right' : currentState == 'app.qTabs.completed'}"
+               ng-repeat="que in questionnaireList"
+               on-tap="navigateAnswering(que.Id, title)">
+                <div class="row removePadding listItem">
+                    <div class="col-10 listImage" ng-bind-html="que.QuestionImageFileBase64" ng-if="que.QuestionImageFileBase64 != null"></div>
+                    <div ng-class="{ 'col col-90' : que.QuestionImageFileBase64 !== null, 'col' : que.QuestionImageFileBase64 === null }">
+                        <h2 class="showFullText">{{::que.Name}}</h2>
+                        <p ng-bind-html="que.Description"></p>
+                    </div>
+                </div>
+            </a>
+        </ion-list>
+    </ion-content>
+</ion-view>

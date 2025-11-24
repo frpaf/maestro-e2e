@@ -1,0 +1,23 @@
+﻿<list-popup
+  title="{{::q.Text}}"
+  class="item button button-block icon-right {{::getIconValue('DropDown')}}"
+  ng-init="displayText = getSelectedPQText(q)"
+  display-text="{{displayText}}"
+  name="lst_{{::qg.Id}}_{{::q.Id}}"
+  ng-model="getPersonQuestionAnswer(q.Id).AnswerId"
+  style="border: 2px solid #eaeaea"
+  ng-class="{ 'has-errors' : formQuestionnaire.lst_{{::qg.Id}}_{{::q.Id}}.$invalid
+  && {{::q.IsRequired}} == true, 'no-errors' : formQuestionnaire.lst_{{::qg.Id}}_{{::q.Id}}.$valid
+  && {{::q.IsRequired}} == true}"
+  ng-required="{{::q.IsRequired}}"
+>
+  <list-dropdown
+    ng-init="list = q.AnswerOptions; question = q; setCheckVal = setAnswerOptionSelected; getStatus = getDefaultStatus; getPQText = getSelectedPQText; pq = pq; setRadioVal = setSelected; getPersonQue = getPersonQuestionAnswer; chkCRCheckBox = checkCommentRequiredCheckBox; chkCRRadio = checkCommentRequiredRadio;"
+    datasource="list"
+    ng-model="getPersonQuestionAnswer(q.Id).AnswerId"
+    question="question"
+    value-field="Id"
+    text-field="Text"
+  >
+  </list-dropdown>
+</list-popup>

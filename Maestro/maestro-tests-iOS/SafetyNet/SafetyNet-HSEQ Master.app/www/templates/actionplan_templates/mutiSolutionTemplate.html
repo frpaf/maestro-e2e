@@ -1,0 +1,81 @@
+﻿<ion-list>
+    <div class="item item-divider"
+         ng-class="{ 'item-icon-right' : wizStep.Description !== null}"
+         align-title="left"
+         on-touch="showGroupDescription(wizStep.Title, wizStep.Description)"
+         ng-style="{'background-color': wizard.GroupBackColor }">
+        <div class="buttons displayInlineBlock verticalTopAlign" ng-if="readAloud" ng-class="{ 'textSpeechAlign': readAloud}">
+            <div class="icon displayInlineBlock helpLinkIcon">
+                <img ng-src="images/speaker.png" class="darkImg" on-touch="ttsConvert(wizStep.Title, $event)" />
+            </div>
+        </div>
+        <h2 class="title showFullText" ng-class="{ 'txtSpchAlignColumn': readAloud}"
+            ng-style="{'color': wizard.GroupForeColor }"
+            ng-bind-html="wizStep.Title"></h2>
+        <div class="icon" ng-if="wizStep.Description !== null">
+            <a class="button button-icon {{::getIconValue('Help')}}"></a>
+        </div>
+    </div>
+    <div>
+        <div ng-repeat="wizColumn in wizStep.Columns">
+            <div ng-if="!wizColumn.IsMultiTaskColumn">
+                <question-template templateUrl="templates/actionplan_templates/actionplanColumnTemplate.html">
+                </question-template>
+            </div>
+        </div>
+        <div ng-if="multiTask.IsFreshMultiTask">
+            <div class="list card">
+                <div ng-repeat="wizColumn in wizStep.Columns" ng-if="wizColumn.IsMultiTaskColumn">
+                    <div class="item cardColor showFullText">
+                        <div ng-if="readAloud" ng-class="{ 'textSpeechAlign': readAloud}">
+                            <div class="icon displayInlineBlock helpLinkIcon">
+                                <img ng-src="images/speaker.png" class="darkImg" ng-click="ttsConvert(wizColumn.TranslatedText, $event)" />
+                            </div>
+                        </div>
+                        <div ng-bind-html="wizColumn.TranslatedText" ng-class="{'txtSpchAlignColumn': readAloud }"></div>
+                    </div>
+                    <div ng-include="loadApwMultiTaskTemplate(wizColumn)"></div>
+                </div>
+            </div>
+            <div class="row removePadding">
+                <div class="col col-50">
+                    <button class="button button-small icon-left buttonColor formDefaultWidth ion-android-cancel"
+                            ng-click="cancelMultiTask(MultiTaskEntity)">
+                        {{::getResourceText('LIT_CANCEL_MULTITASK')}}
+                    </button>
+                </div>
+                <div class="col col-50">
+                    <button class="button button-small icon-left buttonColor submitRightAlign formDefaultWidth ion-checkmark"
+                            ng-click="saveMultiTask(MultiTaskEntity)">
+                        {{::getResourceText('LIT_SAVE_MULTITASK')}}
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div ng-if="!multiTask.IsFreshMultiTask" ng-init="getPersonApwMultiTaskAnswer(personActionPlanWizard.Id, wizStep, false)">
+            <div class="list card">
+                <div class="item item-divider item-icon-right">
+                    <i class="icon ion-ios-plus iconFont"
+                       on-tap="openMultiTask(personActionPlanWizard.Id, wizStep)"></i>
+                    {{::getResourceText('LIT_MULTI_TASK_SOLUTION')}}
+                </div>
+                <div class="list card" ng-repeat="mt in MultiTaskList" ng-if="!mt.IsEmptyMultiTask">
+                    <div class="item dark" ng-style="{'border': '1px solid ' + wizard.GroupBackColor }">
+                        <div class="row multiTaskItemHeight">
+                            <div class="col col-80 removePadding">
+                                <h2>{{mt.SolutionText}}</h2>
+                            </div>
+                            <div class="col col-15 removePadding">
+                                <span class="button button-icon ion-edit multiTaskItemButton" on-tap="editMultiTask(mt)"></span>
+                            </div>
+                            <div class="col col-15 removePadding">
+                                <span class="button button-icon ion-android-delete multiTaskItemButton" on-tap="deleteMultiTask(mt)"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</ion-list>
+

@@ -1,0 +1,8 @@
+<label id="lblUploader" class="item item-icon-left fileSelectorLabel">
+    <i class="icon {{FolderIcon}}"></i>
+    {{ SelectFileText }}
+</label>
+<div class="fileUploadBlock" style="display: none">
+    <input id="fileInput" type="file" accep="{{extensions}}" class="fileInput" ng-model="file">
+    <button class="button" ng-click="UploadFile()">Upload Selected</button>
+</div>

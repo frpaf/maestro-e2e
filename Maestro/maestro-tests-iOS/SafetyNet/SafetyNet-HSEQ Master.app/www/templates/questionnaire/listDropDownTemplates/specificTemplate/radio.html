@@ -1,0 +1,20 @@
+<ion-scroll
+  direction="y"
+  class="available-scroller"
+  style="height:{{getItemHeightForWindow()}};"
+>
+  <div overflow-scroll="true" class="removeTop">
+    <ion-radio
+      ng-init="radioBox = getPersonQue()"
+      ng-repeat="item in dataSource"
+      class="answerOptionRadio_{{::item.Id}} alignSmileyWithAO showCompleteAnswerOptionRadio"
+      ng-click="setRadioBoxVal(item.Id, $event)"
+      ng-change="CommentRequiredRadio(item)"
+      value="{{::item.Id}}"
+      ng-model="radioBox.AnswerId"
+    >
+      {{item.Text}}
+      <div ng-if="item.ImageFile !== null" ng-bind-html="item.ImageFile"></div>
+    </ion-radio>
+  </div>
+</ion-scroll>

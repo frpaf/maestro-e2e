@@ -1,0 +1,10 @@
+﻿<ion-popover-view class="fit">
+    <ion-content scroll="false">
+        <div class="list" on-touch="closePopOver()">
+            <a class="item item-icon-left" on-touch="toggleUrl()">
+                <i class="icon {{::getIconValue('Toggle')}}"></i>
+                {{::getResourceText('LIT_MOBILE_TOGGLE')}}
+            </a>
+        </div>
+    </ion-content>
+</ion-popover-view>

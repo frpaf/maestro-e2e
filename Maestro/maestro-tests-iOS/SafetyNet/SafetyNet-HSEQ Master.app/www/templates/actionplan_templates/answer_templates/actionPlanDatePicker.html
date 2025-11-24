@@ -1,0 +1,12 @@
+﻿<ion-item answercolid="{{personApwStepAnswerColumn.Id}}"
+          callback="setApwDate" class="pickerDark picker">
+    <label name="datePickerApw_{{::wizStep.Id}}_{{::wizColumn.Id}}"
+            class="button button-block buttonValue button-outline fontButtonIcon icon-left {{::getIconValue('Calender')}}" 
+            ng-class="{ 'has-errors' : formActionPlan.datePickerApw_{{::wizStep.Id}}_{{::wizColumn.Id}}.$invalid && {{::wizColumn.IsRequired}} == true,
+                         'no-errors' : formActionPlan.datePickerApw_{{::wizStep.Id}}_{{::wizColumn.Id}}.$valid && {{::wizColumn.IsRequired}} == true }"
+           ng-required="{{::wizColumn.IsRequired}}"
+          ng-click="showDate(wizColumn, personApwStepAnswerColumn)"
+          ng-model="personApwStepAnswerColumn.AnswerDate">
+        {{personApwStepAnswerColumn.AnswerDate| date:'dd-MM-yyyy'}}
+    </label>
+</ion-item>

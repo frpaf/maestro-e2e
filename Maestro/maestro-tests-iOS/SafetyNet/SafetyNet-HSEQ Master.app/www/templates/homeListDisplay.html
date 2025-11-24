@@ -1,0 +1,65 @@
+﻿<ion-content overflow-scroll="true">
+    <ion-refresher pulling-text="{{::getResourceText('LIT_PULL_TO_REFRESH')}}"
+                   on-refresh="updateDefinations()">
+    </ion-refresher>
+    <div class="list list-inset" ng-if="showSurvey()">
+        <div class="item item-divider row"
+             ng-style="{ 'background-color' : '{{::headerColor}}', 'color': '#FFFFFF' }" ng-cloak>
+            <div class="col col-90" ng-cloak>
+                <div class="item-icon-left"
+                     ng-style="{ 'background-color' : '{{::userApp.ColourCode}}', 'color': '#FFFFFF' }">
+                    {{getResourceText('LIT_MOBILE_SURVEY_HEADER')}}
+                </div>
+            </div>
+        </div>
+        <div ng-include="loadListTemplate('Survey')" ng-cloak></div>
+    </div>
+    <div class="list list-inset" ng-repeat="userApp in userApplicationsDetails" ng-cloak>
+        <div class="item item-divider row"
+             ng-style="{ 'background-color' : '{{::userApp.ColourCode}}', 'color': '#FFFFFF' }" ng-cloak>
+            <div class="col col-90" ng-cloak>
+                <div class="item-icon-left"
+                     ng-style="{ 'background-color' : '{{::userApp.ColourCode}}', 'color': '#FFFFFF' }"
+                     on-tap="navigateToListScreen(userApp)">
+                    <i class="icon {{::userApp.IconClass}} homeModIcon"></i>
+                    {{::userApp.TranslatedText}}
+                </div>
+            </div>
+            <div class="col-10"
+                 ng-style="{ 'background-color' : '{{::userApp.ColourCode}}', 'color': '#FFFFFF' }" ng-cloak>
+                <a class="dbutton rightAlign fontWhite {{::getIconValue('Download')}} button-clear dbHome"
+                   on-tap="getData(userApp.Text, userApp.TranslatedText)"></a>
+            </div>
+        </div>
+        <div ng-include="loadListTemplate(userApp.Text)" ng-cloak></div>
+        <div ng-cloak class="item item-icon-left" ng-if="checkModule(userApp).length == 0 && checkInprogressCount(userApp.Text) == 0 && checkCompletedCount(userApp.Text) == 0">
+            <i class="icon {{::getIconValue('NoData')}}"></i>
+            <p>{{::getResourceText('MSG_DOWNLOAD_TO_ANSWER')}}</p>
+        </div>
+        <div ng-if="userApp.Text !== 'DocumentLibrary'">
+            <div ng-cloak class="item item-divider row darkMode" ng-if="checkInprogressCount(userApp.Text) !== 0 || checkCompletedCount(userApp.Text) !== 0"
+                 ng-style="{ 'background-color' : '#FFFFFF' }">
+                <div class="item item-divider col col-50 item-icon-left" ng-cloak
+                     ng-style="{ 'color' : '{{::userApp.ColourCode}}', 'border-style' : 'none', 'border-right' : '1px solid #ddd', 'background-color' : 'inherit' }"
+                     ui-sref="{{::userApp.RouteValue}}.inProgress({ viewTitle: '{{::userApp.TranslatedText}}',
+                                type: '{{::userApp.Text}}', modColor: '{{::userApp.ColourCode}}' })">
+                    <i class="icon {{::getIconValue('InProgress')}}-outline homeViewInProgressCompleted">
+                        <span class="homeViewInpCompTextFont">{{::getResourceText('LIT_INPROGRESS')}}</span>
+                    </i>
+                    <span class="badge badgeHome"
+                          ng-style="{ 'background-color' : '{{::userApp.ColourCode}}' }">{{checkInprogressCount(userApp.Text)}}</span>
+                </div>
+                <div ng-cloak class="item item-divider col col-50 item-icon-left"
+                     ng-style="{ 'color' : '{{::userApp.ColourCode}}', 'border-style' : 'none', 'border-left' : '1px solid #ddd', 'background-color' : 'inherit' }"
+                     ui-sref="{{::userApp.RouteValue}}.completed({ viewTitle: '{{::userApp.TranslatedText}}',
+                                type: '{{::userApp.Text}}', modColor: '{{::userApp.ColourCode}}' })">
+                    <i class="icon {{::getIconValue('Completed')}}-outline homeViewInProgressCompleted">
+                        <span class="homeViewInpCompTextFont">{{::getResourceText('LIT_COMPLETED')}}</span>
+                    </i>
+                    <span class="badge badgeHome"
+                          ng-style="{ 'background-color' : '{{::userApp.ColourCode}}' }">{{checkCompletedCount(userApp.Text)}}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</ion-content>

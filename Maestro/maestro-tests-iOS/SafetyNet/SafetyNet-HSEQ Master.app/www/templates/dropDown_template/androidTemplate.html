@@ -1,0 +1,12 @@
+﻿<ion-scroll direction="y" class="available-scroller" style="height:{{getItemHeightForWindow()}};">
+    <ion-content overflow-scroll="true" class="removeTop">
+        <ion-list>
+            <ion-item class="listPopUpDataSource" collection-repeat="item in dataSource | filter:( !isOnlineSearch ? searchModel : ''):strict"
+                      collection-item-height="'50'" collection-item-width="'100%'" on-tap="tapped(item)" on-hold="showCompleteItemText(item)">
+                <div class="row removePadding">
+                    <span class="dropDownLabel removePadding col col-90">{{item[dataTextField]}}</span><span ng-if="isOnlineDropDownData" class="higlightLabel removePadding higlightColor col col-10">·</span>
+                </div>
+            </ion-item>
+        </ion-list>
+    </ion-content>
+</ion-scroll>

@@ -1,0 +1,8 @@
+﻿<ion-view view-title="{{::title}}" ng-show="showHome">
+    <ion-content overflow-scroll="true" class="gridPadding">
+        <div ng-init="loadHomeTemplate()" ng-include="homeTemplatePath"></div>
+        <div>
+            <i ng-if="showDownArrow" class="icon ion-android-arrow-dropdown-circle scrollIndicator" ng-style="{ 'color' : headerColor }"></i>
+        </div>
+    </ion-content>
+</ion-view>

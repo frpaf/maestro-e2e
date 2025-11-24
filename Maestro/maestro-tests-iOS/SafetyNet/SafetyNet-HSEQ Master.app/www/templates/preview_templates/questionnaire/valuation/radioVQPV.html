@@ -1,0 +1,9 @@
+﻿<ion-radio ng-repeat="vao in vq.ValuationAnswerOption"
+           id="rb_{{::qg.Id}}_{{::q.Id}}_{{::vq.Id}}_{{::vao.Id}}" class="answerOptionRadio_{{::vq.Id}}_{{::vao.Id}} alignSmileyWithAO showCompleteAnswerOptionRadio"
+           name="rb_{{::qg.Id}}_{{::q.Id}}_{{vq.Id}}"
+           ng-change="setVQAnswerOptionSelectedRadio(q.Id,vq.Id,vao.Id)"
+           ng-value="vao.Id"
+           ng-model="getPersonVQAnswer(q.Id,vq.Id).AnswerId"
+           ng-disabled="true">
+    {{::vao.Text}}<div ng-if="vao.ImageFile !== null" ng-bind-html="vao.ImageFile"></div>
+</ion-radio>

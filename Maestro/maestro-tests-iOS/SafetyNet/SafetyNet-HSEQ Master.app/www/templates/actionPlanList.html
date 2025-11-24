@@ -1,0 +1,20 @@
+﻿<ion-view view-title="SafetyNet">
+    <ion-content overflow-scroll="true" class="has-subheader">
+        <ion-refresher pulling-text="{{getResourceText('LIT_PULL_TO_REFRESH')}}"
+                       on-refresh="updateActionPlan()">
+        </ion-refresher>
+        <ion-list>
+            <a class="item" ng-class="{ 'item-icon-right' : currentState == 'app.apwTabs.completed'}"
+               ng-repeat="apw in apwList"
+               on-tap="navigateApwAnswering(apw.Id)">
+                <div class="row removePadding listItem">
+                    <div class="col-10 listImage" ng-bind-html="apw.ImageLogoBase64" ng-if="apw.ImageLogoBase64 != null"></div>
+                    <div ng-class="{ 'col col-90' : apw.ImageLogoBase64 !== null, 'col' : apw.ImageLogoBase64 === null }">
+                        <h2 class="showFullText">{{::apw.Name}}</h2>
+                        <p ng-bind-html="apw.Description"></p>
+                    </div>
+                </div>
+            </a>
+        </ion-list>
+    </ion-content>
+</ion-view>

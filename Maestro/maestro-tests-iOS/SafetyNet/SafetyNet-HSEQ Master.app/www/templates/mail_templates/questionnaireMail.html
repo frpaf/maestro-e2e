@@ -1,0 +1,49 @@
+﻿<div>
+    <p><cite>{{::getResourceText('LIT_DEAR')}} {{userDetail.UserName}},</cite>
+    </p>
+    <p>
+        {{::getResourceText('MSG_EMAIL_START_PHRASE')}} {{translatedModuleText}} <b>{{questionnaire.Name}}</b>
+    </p>
+    <br />
+    <br />
+    <br />
+    <div>
+        <h1><b><u><font ng-bind-html="questionnaire.Name" color="#151515" face="Times New Roman, Georgia, Serif"></font></u></b></h1>
+    </div>
+    <div ng-repeat="qg in validQuestionnaireGroups(pq.Questionnaire.Groups)">
+        <div>
+            <h1><i><b><u><font ng-bind-html="qg.Name" color="{{questionnaire.QuestionGroupBackColor}}" face="Times New Roman, Georgia, Serif"></font></u></b></i></h1>
+        </div>
+        <div ng-repeat="q in qg.Questions" ng-if="q.IsDependencyMet">
+            <div>
+                <h3><b><u><font ng-bind-html="q.Text" color="{{questionnaire.QuestionBackColor}}" face="Times New Roman, Georgia, Serif"></font></u></b></h3>
+            </div>
+            <div ng-init="pqaView = getPersonQuestionAnswer(q.Id, pq.Answers)">
+                <div ng-include="loadMailAOTemplate(q.TypeCode)"></div>
+                <div ng-if="questionnaire.ValuationQuestion.length !== 0">
+                    <div ng-if="!q.IgnoreValuationQuestion">
+                        <div ng-repeat="vq in questionnaire.ValuationQuestion"
+                             ng-init="pvqaView = getPersonVQAnswer(q.Id,vq.Id, pq.ValuationAnswers)">
+                            <div>
+                                <h2><b><u><font ng-bind-html="vq.Text" color="{{questionnaire.QuestionBackColor}}" face="Times New Roman, Georgia, Serif"></font></u></b></h2>
+                            </div>
+                            <div ng-include="loadMailVAOTemplate(vq.TypeCode)">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div ng-if="q.EnableComment">
+                    <h5><font color="#151515" face="Times New Roman, Georgia, Serif">{{questionnaire.CommentLabel !== null ? questionnaire.CommentLabel : getResourceText('LIT_COMMENT')}} : </font></h5><h5><font ng-bind-html="pqaView.Comment" color="#151515" face="Times New Roman, Georgia, Serif"></font></h5>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <tt>{{::getResourceText('MSG_AUTO_GENERATE')}}</tt>
+</div>

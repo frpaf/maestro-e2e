@@ -1,0 +1,19 @@
+﻿<pop-up title="{{wizColumn.TranslatedText}}"
+        ng-init="dispText = getDropDownText(wizColumn.Text, wizColumn.ColumnType, personApwStepAnswerColumn.AnswerId)"
+        display-text="{{dispText}}"
+        class="item actionPlanMargin button button-block icon-right {{::getIconValue('DropDown')}} alignSelectTag"
+        name="dropDownApw_{{::wizStep.Id}}_{{::wizColumn.Id}}"
+        ng-model="personApwStepAnswerColumn.AnswerId"
+        style="border:2px solid #EAEAEA;"
+        ng-class="{ 'has-errors' : formActionPlan.dropDownApw_{{::wizStep.Id}}_{{::wizColumn.Id}}.$invalid && {{::wizColumn.IsRequired}} == true,
+                         'no-errors' : formActionPlan.dropDownApw_{{::wizStep.Id}}_{{::wizColumn.Id}}.$valid && {{::wizColumn.IsRequired}} == true }"
+        ng-required="{{::wizColumn.IsRequired}}">
+    <lazy-dropdown selected-data-entity="personApwStepAnswerColumn"
+                   ng-init="columnsListSource = getDropDownSourceByText(wizColumn.Text, wizColumn.ColumnType); columnType = wizColumn.ColumnType; dropDownTypeVal = wizColumn.Text; isOnline = isOnlineDropDownEnable(wizColumn.Text, wizColumn.ColumnType); typeVal = 'ActionPlan'; columnSubType = null; defaultVal = personApwStepAnswerColumn.DefaultValue; textField = wizColumn.Text === 'Department' ? 'DisplayText' : 'Text'; QRCodeReader = wizColumn.EnableQRCodeReader;"
+                   ng-model="personApwStepAnswerColumn.AnswerId" sample="personApwStepAnswerColumn.AnswerId"
+                   datasource="columnsListSource" text-field="textField" value-field="Id" selected-display-text="Text"
+                   dropdowntype="dropDownTypeVal" columntype="columnType"
+                   type="typeVal" on-item-selected="setSelectedItem" enableonline="isOnline"
+                   dropdown-default-value="defaultVal" column-sub-type="columnSubType" qr-code-reader-enabled="QRCodeReader">
+    </lazy-dropdown>
+</pop-up>

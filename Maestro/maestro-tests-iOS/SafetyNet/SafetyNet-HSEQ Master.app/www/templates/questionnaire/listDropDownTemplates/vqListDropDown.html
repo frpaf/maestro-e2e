@@ -1,0 +1,24 @@
+<vqlist-popup
+  title="{{::vq.Text}}"
+  class="item button button-block icon-right {{::getIconValue('DropDown')}}"
+  ng-init="displayText = getSelectedVQText(q,vq); IsRequired = getRequiredForListDropDown(q,vq);"
+  display-text="{{displayText}}"
+  name="vqlst_{{::qg.Id}}_{{::q.Id}}_{{::vq.Id}}"
+  ng-model="getPersonVQAnswer(q.Id,vq.Id).AnswerId"
+  style="border: 2px solid #eaeaea"
+  ng-class="{ 'has-errors' : formQuestionnaire.vqlst_{{::qg.Id}}_{{::q.Id}}_{{::vq.Id}}.$invalid
+  && IsRequired == true, 'no-errors' : formQuestionnaire.vqlst_{{::qg.Id}}_{{::q.Id}}_{{::vq.Id}}.$valid
+  && IsRequired == true}"
+  ng-required="IsRequired"
+>
+  <vqlist-dropdown
+    ng-init="list = vq.ValuationAnswerOption; question = q; pq = pq; valuationQue = vq; setCheckVal = setPVQAnswerOptionSelected; getStatus = getVQDefaultStatus; getVQText = getSelectedVQText; pq = pq; setRadioVal = setVQSelected; getPersonQue = getPersonVQAnswer"
+    datasource="list"
+    ng-model="getPersonVQAnswer(q.Id,vq.Id).AnswerId"
+    question="question"
+    value-field="Id"
+    text-field="Text"
+    valuationQue="valuationQue"
+  >
+  </vqlist-dropdown>
+</vqlist-popup>

@@ -1,0 +1,37 @@
+<button class="button button-icon icon ion-android-arrow-down placeholder-icon treeToggle"
+        ng-class="{ 'ion-android-arrow-dropup' : isDropDownOpen, 'ion-android-arrow-dropdown' : !isDropDownOpen }"
+        ng-style="{ 'color': '{{modColor}}' }"
+        on-tap="toggleDropDown()"></button>
+<div ng-model="isDropDownOpen" class="docTreeRoot">
+    <ul ng-if="docTreeView.length != 0" class="documentTree tree">
+        <li ng-repeat="treeName in docTreeView | filter:searchModel:strict | orderBy:'Text'"
+            class="documentParent">
+            <details class="documentParentName" ng-open="isOpen(treeName)">
+                <summary ng-style="{'color': '{{modColor}}'}" on-tap="expandClose(treeName)">
+                    {{treeName.Name}}
+                </summary>
+                <ul>
+                    <li class="docText docVisited"
+                        ng-if="treeName.docList != null && treeName.docList.length > 0"
+                        ng-repeat="doc in treeName.docList"
+                        on-hold="selectFavoritesOnHold(doc)">
+                        <a class="icon {{doc.ListIcon}}"
+                           ng-style="{ 'color': '{{modColor}}' }"></a>
+                        <span style="font-size:1em" ng-if="isBackgroundDownloadLink(doc) && !isFileAlreadyDownloaded(doc)" ng-bind-html="downloadIndicator[doc.Id]"></span>
+                        <i style="font-size:1em;color: green;margin:1px" ng-if="isFileAlreadyDownloaded(doc)" class="ion-checkmark-circled"></i>
+                        <i style="font-size:1em;color: red;margin:1px" ng-if="isFileErrored(doc)" class="ion-minus-circled"></i>
+                        <span on-tap="documentTreeAction(doc)">{{doc.Text}}</span>
+                        <a class="button button-icon docLibIconFont" ng-if="doc.AiAssistanceLink" on-tap="openAiLink(doc)" ng-style="{ 'color': '{{modColor}}' }">
+                            <img src="images/chatbot.png" style="height:25px" />
+                        </a>
+                    </li>
+                    <div ng-if="treeName.Children != null && treeName.Children.length > 0"
+                         class="documentChildTree">
+                        <div ng-include="loadChildren(treeName.Children)"></div>
+                    </div>
+                </ul>
+            </details>
+            <img id="aiChat" ng-if="getGroupChatIconVisibility(treeName.docList)" on-tap="openAiGroupLink(treeName.docList)" src="images/chatbot.png" />
+        </li>
+    </ul>
+</div>

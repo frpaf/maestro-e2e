@@ -1,0 +1,63 @@
+<div ng-init="filterData()">
+    <div ng-if="DocSignedList.length > 0">
+        <div class="item item-divider item-icon-left darkMode"
+             ng-style="{'background-color': '{{headerColor}}', color: 'white'}"
+             on-tap="toggleGroup('Signed')">
+            <i class="icon iconFont" ng-class="toogleList.showSigned ? getIconValue('ArrorDropDown') : getIconValue('ArrorDropRight')"></i>
+            {{getResourceText('LIT_MOBILE_SIGNED_LIST')}}
+        </div>
+        <div ng-repeat="file in DocSignedList" ng-if="file.IsSigned && !file.IsAllowedToSign && toogleList.showSigned" on-tap="openDoc(file)">
+            <ion-checkbox class="item item-icon-right docCheck Signed" ng-disabled="true" ng-model="file.IsSigned" ng-true-value="true" ng-false-value="false">
+                <a class="removeTextDecoration fullWidth">
+                    {{file.Text}}
+                    <p>{{file.LinkName}}</p>
+                    <div class="icon alignVertical">
+                        <a class="button button-icon {{::getImageIcon(file.DocumentTypeCode)}} docLibIconFont" ng-style="{ 'color': '{{headerColor}}' }" ng-if="isOnlineDownloadLink(file)"></a>
+                        <a class="button button-icon {{::getImageIcon(file.DocumentTypeCode)}} docLibIconFont" ng-style="{ 'color': '{{headerColor}}' }" ng-if="isBackgroundDownloadLink(file)"></a>
+                        <a class="button button-icon {{::getIconValue('Help')}} docLibIconFont" ng-if="file.ExtendedInfo" ng-style="{ 'color': '{{headerColor}}' }"></a>
+                    </div>
+                </a>
+            </ion-checkbox>
+        </div>
+    </div>
+    <div ng-if="DocToBeSignedList.length > 0">
+        <div class="item item-divider item-icon-left darkMode"
+             ng-style="{'background-color': '{{headerColor}}', color: 'white'}"
+             on-tap="toggleGroup('ToBeSigned')">
+            <i class="icon iconFont" ng-class="toogleList.showToSign ? getIconValue('ArrorDropDown') : getIconValue('ArrorDropRight')"></i>
+            {{getResourceText('LIT_MOBILE_TO_BE_SIGNED')}}
+        </div>
+        <div ng-repeat="file in DocToBeSignedList" on-tap="openFile(file)" ng-if="!file.IsSigned && file.IsAllowedToSign && toogleList.showToSign">
+            <ion-checkbox class="item item-icon-right docCheck Signed" ng-disabled="true" ng-model="file.isChecked" ng-true-value="true" ng-false-value="false">
+                <a class="removeTextDecoration fullWidth">
+                    {{file.Text}}
+                    <p>{{file.LinkName}}</p>
+                    <div class="icon alignVertical">
+                        <a class="button button-icon {{::getImageIcon(file.DocumentTypeCode)}} docLibIconFont" ng-style="{ 'color': '{{headerColor}}' }" ng-if="isOnlineDownloadLink(file)"></a>
+                        <a class="button button-icon {{::getImageIcon(file.DocumentTypeCode)}} docLibIconFont" ng-style="{ 'color': '{{headerColor}}' }" ng-if="isBackgroundDownloadLink(file)"></a>
+                        <a class="button button-icon {{::getIconValue('Help')}} docLibIconFont" ng-if="file.ExtendedInfo" ng-style="{ 'color': '{{headerColor}}' }"></a>
+                    </div>
+                </a>
+            </ion-checkbox>
+        </div>
+    </div>
+    <div ng-if="DocNoSignList.length > 0">
+        <div class="item item-divider item-icon-left darkMode"
+             ng-style="{'background-color': '{{headerColor}}', color: 'white'}"
+             on-tap="toggleGroup('NoSign')">
+            <i class="icon iconFont" ng-class="toogleList.showNoSIgn ? getIconValue('ArrorDropDown') : getIconValue('ArrorDropRight')"></i>
+            {{getResourceText('LIT_MOBILE_NO_SIGN_NEEDED')}}
+        </div>
+        <div ng-repeat="file in DocNoSignList" ng-if="!file.IsSigned && !file.IsAllowedToSign && toogleList.showNoSIgn" on-tap="openDoc(file)">
+            <div class="item icon alignVertical" style="padding: 10px 16px 10px 16px !important">
+                <a class="removeTextDecoration fullWidth f-jc-str">
+                    {{file.Text}}
+                    <p>{{file.LinkName}}</p>
+                </a>
+                <a class="button button-icon {{::getImageIcon(file.DocumentTypeCode)}} docLibIconFont" ng-style="{ 'color': '{{headerColor}}' }" ng-if="isOnlineDownloadLink(file)"></a>
+                <a class="button button-icon {{::getImageIcon(file.DocumentTypeCode)}} docLibIconFont" ng-style="{ 'color': '{{headerColor}}' }" ng-if="isBackgroundDownloadLink(file)"></a>
+                <a class="button button-icon {{::getIconValue('Help')}} docLibIconFont" ng-if="file.ExtendedInfo" ng-style="{ 'color': '{{headerColor}}' }"></a>
+            </div>
+        </div>
+    </div>
+</div>

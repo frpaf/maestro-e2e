@@ -1,0 +1,6 @@
+﻿<div ng-repeat="ao in q.AnswerOptions"
+     ng-init='checkStatus=getDefaultStatus(q.Id,ao.Id, pq.Answers)'>
+    <font ng-if="checkStatus == true" color="{{ao.ColourCode}}" face="Times New Roman, Georgia, Serif">
+        {{getAnswerOptionTextById(ao.Id)}}
+    </font>
+</div>

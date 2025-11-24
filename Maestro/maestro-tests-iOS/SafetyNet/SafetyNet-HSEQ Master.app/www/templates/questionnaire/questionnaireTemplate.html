@@ -1,0 +1,53 @@
+﻿<ion-view view-title="{{::title}}" ng-view>
+    <form name="formQuestionnaire" id="formQuestionnaire" novalidate>
+        <div ng-if="!endOfQuestionnaire">
+            <div class="subHeaderColor bar bar-subheader" align-title="center"
+                 ng-class="{ 'item-icon-right' : questionnaire.Description !== null}"
+                 on-touch="showGroupDescription(questionnaire.Name, questionnaire.Description)">
+                <h2 class="title"
+                    ng-class="{ 'headerTitleWidth' : questionnaire.Description !== null}" ng-bind-html="questionnaire.Name"></h2>
+                <div class="icon" ng-if="questionnaire.Description !== null">
+                    <a class="button button-icon {{::getIconValue('Help')}} topLevelHelp"></a>
+                </div>
+            </div>
+            <ion-content overflow-scroll="true" class="has-subheader">
+                <div class="contentContainer">
+                    <div class="bodyContent">
+                        <group-template templateUrl="templates/questionnaire/groupTemplate.html"
+                                        ng-repeat="qg in questionnaire.Groups" ng-if="$index == showView()" ng-init="setCount($index)">
+                        </group-template>
+                    </div>
+                    <div ng-if="count == currentGroupIndex" class="footer">
+                        <div class="row headerFooterColor removePadding">
+                            <div class="col col-50">
+                                <button class="button buttonColor formDefaultWidth removePadding"
+                                        on-touch="previousView()"
+                                        ng-if="!(navigatingGroupIndex == -1)"
+                                        ng-disabled="isDisabled">
+                                    {{::getResourceText('LIT_BACK')}}
+                                </button>
+                            </div>
+                            <div class="col col-50">
+                                <button class="button buttonColor formDefaultWidth removePadding"
+                                        on-touch="nextView()"
+                                        ng-if="!(navigatingGroupIndex == questionnaireGroupLength)"
+                                        ng-disabled="isDisabled">
+                                    {{::getResourceText('LIT_NEXT')}}
+                                </button>
+                                <button class="button buttonColor submitRightAlign formDefaultWidth removePadding"
+                                        on-touch="submit()"
+                                        ng-if="(navigatingGroupIndex == questionnaireGroupLength)"
+                                        ng-disabled="isDisabled">
+                                    {{::getResourceText('LIT_SUBMIT')}}
+                                </button>
+                            </div>
+                        </div>
+                        <div class="pagerColor">
+                            <div class="row progress removePadding" ng-style='{"width": pos , "background-color": modColor }'></div>
+                        </div>
+                    </div>
+                </div>
+            </ion-content>
+        </div>
+    </form>
+</ion-view>

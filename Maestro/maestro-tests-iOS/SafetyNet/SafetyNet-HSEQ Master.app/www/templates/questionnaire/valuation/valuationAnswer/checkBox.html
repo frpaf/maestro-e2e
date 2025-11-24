@@ -1,0 +1,14 @@
+﻿<div ng-class="{ 'has-errors' : formQuestionnaire.cb_{{::qg.Id}}_{{::q.Id}}_{{::vq.Id}}.$invalid 
+     && {{::q.IsRequired}} == true && {{::vq.IsRequired}} == true, 'no-errors' :
+     formQuestionnaire.cb_{{::qg.Id}}_{{::q.Id}}_{{::vq.Id}}.$valid
+     && {{::q.IsRequired}} == true && {{::vq.IsRequired}} == true}">
+    <ion-checkbox ng-repeat="vao in vq.ValuationAnswerOption" class="answerOption_{{::vq.Id}}_{{::vao.Id}} alignSmileyWithAO showCompleteAnswerOptionCheckBox"
+                  id="cb_{{::qg.Id}}_{{::q.Id}}_{{::vq.Id}}_{{::vao.Id}}"
+                  name="cb_{{::qg.Id}}_{{::q.Id}}_{{::vq.Id}}" ng-change="window.focus();setPVQAnswerOptionSelected(q.Id,vq.Id,vao.Id,checkStatus)"
+                  ng-required="!getRequiredForVQCheckboxList(qg.Id,q.Id,vq.Id,vq.IsRequired)"
+                  ng-init='checkStatus=getVQDefaultStatus(q.Id,vq.Id,vao.Id)'
+                  ng-model="checkStatus">
+        {{::vao.Text}}<div ng-if="vao.ImageFile !== null" ng-bind-html="vao.ImageFile"></div>
+    </ion-checkbox>
+</div>
+<span ui-view></span>
