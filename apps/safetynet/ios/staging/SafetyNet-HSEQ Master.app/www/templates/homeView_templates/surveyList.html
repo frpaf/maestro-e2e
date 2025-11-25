@@ -1,0 +1,24 @@
+<div class="item">
+    <div class="item">
+        <span>{{missingRegistration}}</span>
+    </div>
+    <a class="todaysSurvey" ng-repeat="day in week" ng-if="$index === 0 && showToday" on-tap="navigateToSurvey(day)">{{getResourceText('LIT_MOBILE_TODAY')}}</a>
+    <div class="surveyHistory" ng-if="showHistory">
+        <span>{{getResourceText('LIT_MOBILE_YOUR_HISTORY')}}</span>
+        <a ng-repeat="day in week" class="list previousSurvey" on-tap="navigateToSurvey(day)" ng-if="showDay($index)">
+            {{getDateText(day)}}
+        </a>
+        <a class="showMoreLess" ng-if="week.length > 3" on-touch="setShowMore()">{{moreText}}</a>
+    </div>
+    <div class="surveyCustomDateSelector" ng-if="showCustomDatePicker()">
+        <ion-item class="pickerDark picker">
+            <label name="datePickerSurvey"
+                   class="button button-block buttonValue button-outline fontButtonIcon icon-left {{::getIconValue('Calender')}}"
+                   ng-model="SurveyDate"
+                   ng-click="showDate(wizColumn, personApwStepAnswerColumn)"
+                   ng-disabled="isDatePickDisabled">
+                {{ SurveyDate| date:'dd-MM-yyyy' }}
+            </label>
+        </ion-item>
+    </div>
+</div>

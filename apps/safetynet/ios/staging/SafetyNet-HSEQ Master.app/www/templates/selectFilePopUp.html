@@ -1,0 +1,14 @@
+﻿<div class="list">
+    <a class="item item-icon-left" on-touch="captureImage(qId)" href="#">
+        <i class="icon {{::getIconValue('Camera')}}"></i>
+        {{::getResourceText('LIT_CAMERA')}}
+    </a>
+    <a class="item item-icon-left" on-touch="chooseImage(qId)" href="#" ng-if="!DisableUploadPhotoLibary">
+        <i class="icon {{::getIconValue('Folder')}}"></i>
+        {{::getResourceText('LIT_FILE_EXPLORER')}}
+    </a>
+    <!--<label id="_lblUploader" class="item item-icon-left" ng-if="canPickDoc" on-touch="TriggerFileSelect()" >
+        <i class="icon {{::getIconValue('Folder')}}"></i>
+        {{::getResourceText('LIT_MOBILE_SELECT_FILE')}}
+    </label>-->
+</div>

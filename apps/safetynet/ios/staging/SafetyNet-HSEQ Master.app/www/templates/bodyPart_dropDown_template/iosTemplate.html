@@ -1,0 +1,11 @@
+﻿<ion-scroll direction="y" class="available-scroller" delegate-handle="childScroll" style="height:{{getItemHeightForWindow()}};">
+    <ion-list>
+        <ion-item class="listPopUpDataSource row"
+            collection-repeat="item in easyDataList | filter:( !isOnlineSearch ? searchModel : ''):strict"
+            collection-item-height="'50'" collection-item-width="'100%'" on-tap="showSub(item)"
+            on-hold="showCompleteItemText(item)">
+            <span class="dropDownLabel removePadding col col-90">{{item[dataTextField]}}</span><span
+                ng-if="isOnlineDropDownData" class="higlightLabel removePadding higlightColor col col-10">·</span>
+        </ion-item>
+    </ion-list>
+</ion-scroll>

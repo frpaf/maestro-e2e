@@ -1,0 +1,7 @@
+﻿<div class="actionPlanMargin" ng-class="{ 'has-errors' : formAskade.akCb_{{::akStep.Id}}_{{::akColumn.FileColumnId}}.$invalid && {{::akColumn.IsMandatory}} === true, 'no-errors' :
+              formAskade.akCb_{{::akStep.Id}}_{{::akColumn.FileColumnId}}.$valid && {{::akColumn.IsMandatory}} === true}">
+    <ion-checkbox name="akCb_{{::akStep.Id}}_{{::akColumn.FileColumnId}}" ng-change="checkChanged(personAkStepColumnAnswer)" 
+                  ng-model="personAkStepColumnAnswer.AnswerId"
+                  ng-true-value="1" ng-false-value="0" ng-required="{{::akColumn.IsMandatory}}">
+    </ion-checkbox>
+</div>

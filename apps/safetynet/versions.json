@@ -1,0 +1,30 @@
+{
+  "staging_android": {
+    "version": "current",
+    "updated": "2025-11-25",
+    "file": "Safetynet.apk",
+    "appId": "com.frontavenue.hseqmaster.safetynet.staging",
+    "environment": "test.ss.dk/safetynetdev_SIT/"
+  },
+  "staging_ios": {
+    "version": "current",
+    "updated": "2025-11-25",
+    "file": "SafetyNet-HSEQ Master.app",
+    "appId": "com.frontavenue.hseqmaster.safetynet.staging",
+    "environment": "test.ss.dk/safetynetdev_SIT/"
+  },
+  "production_android": {
+    "version": "not-configured",
+    "updated": null,
+    "file": null,
+    "appId": "com.frontavenue.hseqmaster.safetynet",
+    "environment": "ss.dk/safetynet/"
+  },
+  "production_ios": {
+    "version": "not-configured",
+    "updated": null,
+    "file": null,
+    "appId": "com.frontavenue.hseqmaster.safetynet",
+    "environment": "ss.dk/safetynet/"
+  }
+}

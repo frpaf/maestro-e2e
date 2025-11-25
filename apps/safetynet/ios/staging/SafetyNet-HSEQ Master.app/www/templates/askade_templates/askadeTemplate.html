@@ -1,0 +1,53 @@
+﻿<ion-view view-title="{{::title}}" ng-view>
+    <form name="formAskade" id="formAskade" novalidate>
+        <div ng-if="!endOfQuestionnaire">
+            <div class="bar bar-subheader item-icon-right"
+                 ng-style="{'background-color': akWizard.BackColor }">
+                <h2 class="title"
+                    ng-style="{'color': akWizard.ForeColor }"
+                    ng-bind-html="akWizard.Name"
+                    on-touch="showGroupDescription(akWizard.Name, null)"></h2>
+            </div>
+            <ion-content overflow-scroll="true" class="has-subheader">
+                <div class="contentContainer">
+                    <div class="bodyContent">
+                        <group-template templateUrl="templates/askade_templates/askadeStepTemplate.html"
+                                        ng-repeat="akStep in akWizard.Steps | filter:{ isVisible: true }"
+                                        ng-if="(currentStepIndex >= 0) && $index == showWizardView()"
+                                        ng-init="setCount($index)">
+                        </group-template>
+                    </div>
+                    <div ng-if="count == currentStepIndex" class="footer">
+                        <div class="row headerFooterColor removePadding">
+                            <div class="col col-50">
+                                <button class="button buttonColor formDefaultWidth removePadding"
+                                        on-touch="previousWizardView()"
+                                        ng-if="!(currentStepIndex == 0)"
+                                        ng-disabled="isDisabled">
+                                    {{::getResourceText('LIT_BACK')}}
+                                </button>
+                            </div>
+                            <div class="col col-50">
+                                <button class="button buttonColor formDefaultWidth removePadding"
+                                        on-touch="nextWizardView()"
+                                        ng-if="!(currentStepIndex == akStepsLength - 1)"
+                                        ng-disabled="isDisabled">
+                                    {{::getResourceText('LIT_NEXT')}}
+                                </button>
+                                <button class="button buttonColor submitRightAlign formDefaultWidth removePadding"
+                                        on-touch="submitAskade()"
+                                        ng-if="(currentStepIndex == akStepsLength - 1)"
+                                        ng-disabled="isDisabled">
+                                    {{::getResourceText('LIT_SUBMIT')}}
+                                </button>
+                            </div>
+                        </div>
+                        <div class="pagerColor">
+                            <div class="row progress removePadding" ng-style='{"width": pos , "background-color": modColor }'></div>
+                        </div>
+                    </div>
+                </div>
+            </ion-content>
+        </div>
+    </form>
+</ion-view>

@@ -1,0 +1,14 @@
+appId: com.frontavenue.hseqmaster.safetynet
+tags:
+  - android
+  - passing
+---
+
+# Click on Next button
+- tapOn: "NEXT "
+
+# Click on Next button
+- tapOn: "NEXT "
+
+# Click on Next button
+- tapOn: "DONE "

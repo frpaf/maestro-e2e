@@ -1,0 +1,70 @@
+﻿<ion-header-bar class="headerColor headerFooterColor headerToggle">
+    {{::title}}
+</ion-header-bar>
+<ion-view>
+    <ion-content class="padding" overflow-scroll="true" style="background-color: #EDEDED;">
+        <div>
+            <form ng-submit="navigateToLogin(data)" novalidate>
+                <div class="flexClassImage spacing flexDir">
+                    <!-- logo -->
+                    <img src="images/EG-SafetyNet-logo.svg" alt="Logo" class="mainLogo" />
+                    <hr />
+                    <p class="welcomeText">{{getResourceText('LIT_MOBILE_WELCOME_TEXT')}}</p>
+                </div>
+                <div class="welcomeText flexClass flexDir spacing">
+                    <p>{{getResourceText('LIT_MOBILE_LOGIN_WAYS')}}</p>
+                </div>
+                <div class="scanOrganization flexClass flexDir spacing">
+                    <!-- Scan Organization -->
+                    <div class="labelText">
+                        {{getResourceText('LIT_MOBILE_CUSTOMER_ENVIRONMENT')}}
+                    </div>
+                    <label class="item item-input toggleInputTextPadding" ng-model="data.textBoxVal">
+                        <input class="removePaddingMargin urlScan" type="text" ng-model="data.customerUrl"
+                               placeholder="{{getResourceText('LIT_MOBILE_URL_SCAN_PLACEHOLDER')}}" required
+                               ng-keyup="changeEnvironmentSelection(data, 'textBox')" ng-disabled="data.customerToken">
+                        <a class="button-icon icon {{closeIcon}} placeholder-icon"
+                           ng-style="{ 'color': '#B83E2C' }"
+                           ng-if="data.customerUrl"
+                           on-touch="clearSearch()"></a>
+                        <i class="icon ion-android-done toggleIconFont" style="float:right" ng-if="data.textBoxVal"></i>
+                        <img class="urlScanIcon" src="images/qrcode.png" on-touch="scanURL($event, !data.customerToken)" />
+                    </label>
+                </div>
+                <span>
+                    {{getResourceText('MSG_MOBILE_WELCOME_OR')}}
+                </span>
+                <div class="scanToken flexClass flexDir spacing">
+                    <!-- Scan Token -->
+                    <div class="labelText">
+                        {{getResourceText('LIT_MOBILE_TOKEN_LOGIN')}}
+                    </div>
+                    <label class="item item-input toggleInputTextPadding" ng-model="data.tokenBoxVal">
+                        <input class="removePaddingMargin scanInput" type="text" ng-model="data.customerToken"
+                               placeholder="{{getResourceText('LIT_MOBILE_TOKEN_SCAN_PLACEHOLDER')}}" required
+                               ng-disabled="data.customerUrl" ng-keyup="changeEnvironmentSelection(data, 'tokenBox')">
+                        <a class="button-icon icon {{closeIcon}} placeholder-icon"
+                           ng-style="{ 'color': '#B83E2C' }"
+                           ng-if="data.customerToken"
+                           on-touch="clearSearch()"></a>
+                        <i class="icon ion-android-done toggleIconFont" style="float:right" ng-if="data.tokenBoxVal"></i>
+                        <img class="urlScanIcon" src="images/qrcode.png" on-touch="scanQRCode(!data.customerUrl)" />
+                    </label>
+                </div>
+                <div class="flexClass spacing">
+                    <!-- Continue Button -->
+                    <button type="submit" class="button button-block removePadding buttonColor rightAlign"
+                        ng-disabled="!data.customerUrl && !data.customerToken">
+                        {{getResourceText('LIT_CONTINUE')}}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </ion-content>
+</ion-view>
+
+<div class="scannerButtons loginScanBtn">
+    <a scanneroptions class="icon {{scannerCloseIcon}} cancleScan"></a>
+    <a scanneroptions class="icon {{flipCameraIcon}} flipCam"></a>
+    <a scanneroptions class="icon {{flashCameraIcon}} flashCam"></a>
+</div>

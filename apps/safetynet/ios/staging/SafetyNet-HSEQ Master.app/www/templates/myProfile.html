@@ -1,0 +1,228 @@
+﻿<ion-view view-title="{{getResourceText('LIT_MY_PROFILE')}}">
+    <ion-content overflow-scroll="true">
+        <div class="list" ng-controller="userProfileController"> 
+            <div class="list list-inset darkModeBorder">
+                <div class="item item-divider item-icon-left darkMode" ng-style="{ 'background-color' : userDetails.customerColor, 'color': '#FFFFFF' }">
+                    <i class="icon {{::getIconValue('User')}}"></i>
+                    {{getResourceText('LIT_MY_PROFILE')}}
+                </div>
+                <label class="item item-input">
+                    <span class="input-label profileLabel">{{getResourceText('LIT_USERNAME')}}</span>
+                    <span class="input-label wrapLabel">{{userProfile.UserName}}</span>
+                </label>
+                <label class="item item-input">
+                    <span class="input-label profileLabel">{{getResourceText('LIT_NAME')}}</span>
+                    <span class="input-label wrapLabel">{{userProfile.CompleteName}}</span>
+                </label>
+                <label class="item item-input" ng-if="userProfile.Email !== null && userProfile.Email !== ''">
+                    <span class="input-label profileLabel">{{getResourceText('LIT_EMAIL')}}</span>
+                    <span class="input-label wrapLabel">{{userProfile.Email}}</span>
+                </label>
+            </div>
+            <div class="list list-inset darkModeBorder">
+                <div class="item item-divider item-icon-left darkMode" ng-style="{ 'background-color' : userDetails.customerColor, 'color': '#FFFFFF' }">
+                    <i class="icon {{::getIconValue('Department')}}"></i>
+                    {{getResourceText('LIT_BASEDATA')}}
+                </div>
+                <label class="item item-input">
+                    <span class="input-label profileLabel">{{getResourceText('LIT_ENVIRONMENT')}}</span>
+                    <span class="input-label wrapLabel">{{userDetails.customerUrlPart}}</span>
+                </label>
+                <label class="item item-input">
+                    <span class="input-label profileLabel">{{getResourceText('LIT_COMPANY')}}</span>
+                    <span class="input-label wrapLabel">{{userDetails.customerFullName}}</span>
+                </label>
+                <label class="item item-input">
+                    <span class="input-label profileLabel">{{getResourceText('LIT_DEPARTMENT')}}</span>
+                    <span class="input-label wrapLabel">{{userProfile.PrimaryDepartmentName}}</span>
+                </label>
+                <label class="item item-input item-icon-right" ng-if="userProfile.IsDepartmentManager">
+                    <span class="input-label wrapLabel">{{getResourceText('LIT_IS_DEPARTMENT_MANAGER')}}</span>
+                    <i class="icon"
+                       ng-class="getUserClass(userProfile.IsDepartmentManager)"></i>
+                </label>
+                <label class="item item-input" ng-if="userProfile.ManagerCompleteName !== null && userProfile.ManagerCompleteName !== ''">
+                    <span class="input-label profileLabel">{{getResourceText('LIT_MANAGER')}}</span>
+                    <span class="input-label wrapLabel">{{userProfile.ManagerCompleteName}}</span>
+                </label>
+            </div>
+            <div class="list list-inset darkModeBorder" ng-if="!userDetails.disableUserSetting" ng-show="userDetails.isDemoCust === false && userDetails.isDemoUserBool === false">
+                <form name="form.formMyProfileSetting" ng-submit="saveSettings()" novalidate>
+                    <div class="item item-divider item-icon-left darkMode" ng-style="{ 'background-color' : userDetails.customerColor, 'color': '#FFFFFF' }">
+                        <i class="icon {{getIconValue('AppSetting')}}"></i>
+                        {{getResourceText('LIT_SETTINGS')}}
+                        <button class="button button-outline saveSettings rightAlign buttonColor"
+                                ng-class="{ 'defaultSaveSettingsColor': isSaved === false && !form.formMyProfileSetting.$dirty,
+                                        'saveRequired': form.formMyProfileSetting.$dirty && !form.formMyProfileSetting.$pristine && !isSaved}"
+                                ng-style="{ 'color': '#FFFFFF' }">
+                            {{getResourceText('LIT_SAVE')}}
+                        </button>
+                    </div>
+                    <ion-toggle class="autoSaveToggle breakWord" ng-model="userDetails.isDarkMode">{{getResourceText('LIT_MOBILE_ENABLE_DARKMODE')}}</ion-toggle>
+                    <ion-toggle class="autoSaveToggle breakWord" ng-model="userDetails.checkStatus">{{getResourceText('LIT_AUTO_UPLOAD')}}</ion-toggle>
+                    <ion-toggle class="autoSaveToggle breakWord" ng-model="userDetails.isSaveImageToGallery">{{getResourceText('LIT_SAVE_TO_CAMERA_ROLL')}}</ion-toggle>
+                    <div class="item breakWord">
+                        <div>{{getResourceText('LIT_CAMERA_QUALITY')}}<span ng-if="userDetails.imageQuality !== 0"> : {{userDetails.imageQuality}}</span></div>
+                        <div class="range range-positive">
+                            <i class="icon {{getIconValue('CameraOutline')}}"></i>
+                            <input type="range" name="cameraImageQuality"
+                                   min="10" max="{{maxImageQuality}}"
+                                   value="{{userDetails.imageQuality}}"
+                                   ng-model="userDetails.imageQuality">
+                            <i class="icon {{getIconValue('Camera')}}"></i>
+                        </div>
+                    </div>
+                    <ion-toggle class="autoSaveToggle breakWord" ng-model="userDetails.isReadAloud">{{getResourceText('LIT_READ_ALOUD')}}</ion-toggle>
+                    <div class="item breakWord" ng-if="userDetails.isReadAloud">
+                        <div>{{getResourceText('MSG_MOBILE_READALOUD_SPEED_HANDLE')}}<span> : {{userDetails.readAloudSpeed}}</span></div>
+                        <div class="range range-positive">
+                            <i class="icon ion-minus" on-touch="decreaseSpeed()"></i>
+                            <input type="range" name="readAloudSpeed"
+                                   min="7.5" max="10"
+                                   step="0.1"
+                                   value="{{userDetails.readAloudSpeed}}"
+                                   ng-model="userDetails.readAloudSpeed">
+                            <i class="icon ion-plus" on-touch="increaseSpeed()"></i>
+                        </div>
+                    </div>
+                    <ion-toggle class="autoSaveToggle breakWord" ng-model="userDetails.isTileDisplay">{{getResourceText('LIT_TILE_DISPLAY')}}</ion-toggle>
+                    <div>
+                        <label class="item item-input" ng-class="{ 'has-errors' : form.formMyProfileSetting.nextUpdate.$invalid || form.formMyProfileSetting.nextUpdate.$error.pattern }">
+                            <span class="input-label">{{getResourceText('LIT_NEXT_UPDATE')}}</span>
+                            <input class="updateInput" name="nextUpdate" type="number" ng-model="userDetails.nextUpdate" ng-pattern="/^[1-9][0-9]*$/" ng-required="true">
+                        </label>
+                    </div>
+                    <ion-toggle class="autoSaveToggle breakWord" ng-model="userDetails.isNextAutoUpdateEnable">{{getResourceText('LIT_ENABLE_MOBILEAPP_NEXTAUTOUPDATE')}}</ion-toggle>
+                    <ion-toggle class="autoSaveToggle breakWord" ng-model="userDetails.isLocationHighAccuracyEnable">{{getResourceText('LIT_ENABLE_MOBILEAPP_GEOLOCATIONHIGHACCURACY')}}</ion-toggle>
+                    <ion-toggle class="autoSaveToggle breakWord" ng-model="userDetails.isDisplayFavorites">{{getResourceText('LIT_MOBILE_DISPLAY_FAVORITES')}}</ion-toggle>
+                </form>
+            </div>
+            <div class="list list-inset darkModeBorder">
+                <div class="item item-divider item-icon-left darkMode" ng-style="{ 'background-color' : userDetails.customerColor, 'color': '#FFFFFF' }">
+                    <i class="icon {{getIconValue('Refresh')}}"></i>
+                    {{getResourceText('LIT_REFRESH_DATA')}}
+                </div>
+                <div class="item item-button-right">
+                    {{getResourceText('LIT_RESET_DATA')}}
+                    <button class="button button-icon" on-touch="resetUserData()">
+                        <i class="icon {{getIconValue('Reset')}}"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="list list-inset darkModeBorder">
+                <div class="item item-divider item-icon-left darkMode"
+                     ng-style="{ 'background-color' : userDetails.customerColor, 'color': '#FFFFFF' }"
+                     ng-click="toggleGroup(settings)">
+                    <i class="icon" ng-class="isGroupShown(settings) ? getIconValue('Minus') : getIconValue('Plus')"></i>
+                    {{getResourceText('LIT_ADVANCED_SETTINGS')}}
+                </div>
+                <div class="item item-button-right  "
+                     ng-show="isGroupShown(settings)">
+                    {{getResourceText('LIT_DEPARTMENTS')}}
+                    <button class="button button-small resetButton" on-touch="updateUserSpecificDetails('Departments')"
+                            ng-style="{ 'background-color' : userDetails.customerColor, 'color': '#FFFFFF' }">
+                        {{getResourceText('LIT_REFRESH')}}
+                    </button>
+                </div>
+                <div class="item item-button-right"
+                     ng-show="isGroupShown(settings)">
+                    {{getResourceText('LIT_APPLICATIONS')}}
+                    <button class="button button-small resetButton" on-touch="updateUserSpecificDetails('Applications')"
+                            ng-style="{ 'background-color' : userDetails.customerColor, 'color': '#FFFFFF' }">
+                        {{getResourceText('LIT_REFRESH')}}
+                    </button>
+                </div>
+                <div class="item item-button-right  "
+                     ng-show="isGroupShown(settings)">
+                    {{getResourceText('LIT_PERSONS')}}
+                    <button class="button button-small resetButton" on-touch="updateUserSpecificDetails('Persons')"
+                            ng-style="{ 'background-color' : userDetails.customerColor, 'color': '#FFFFFF' }">
+                        {{getResourceText('LIT_REFRESH')}}
+                    </button>
+                </div>
+                <div class="item item-button-right  "
+                     ng-show="isGroupShown(settings)">
+                    {{getResourceText('LIT_RESOURCES')}}
+                    <button class="button button-small resetButton" on-touch="updateUserSpecificDetails('Resources')"
+                            ng-style="{ 'background-color' : userDetails.customerColor, 'color': '#FFFFFF' }">
+                        {{getResourceText('LIT_REFRESH')}}
+                    </button>
+                </div>
+                <div class="item item-button-right  "
+                     ng-show="isGroupShown(settings)">
+                    {{getResourceText('LIT_ICONS')}}
+                    <button class="button button-small resetButton" on-touch="updateUserSpecificDetails('Icons')"
+                            ng-style="{ 'background-color' : userDetails.customerColor, 'color': '#FFFFFF' }">
+                        {{getResourceText('LIT_REFRESH')}}
+                    </button>
+                </div>
+                <div class="item item-button-right extraPadding"
+                     ng-show="isGroupShown(settings)">
+                    {{getResourceText('LIT_APP_SETTINGS')}}
+                    <button class="button button-small resetButton" on-touch="updateUserSpecificDetails('Suite')"
+                            ng-style="{ 'background-color' : userDetails.customerColor, 'color': '#FFFFFF' }">
+                        {{getResourceText('LIT_REFRESH')}}
+                    </button>
+                </div>
+                <div class="item item-button-right"
+                     ng-show="isGroupShown(settings)">
+                    {{getResourceText('LIT_USERDETAILS')}}
+                    <button class="button button-small resetButton" on-touch="updateUserSpecificDetails('User Details')"
+                            ng-style="{ 'background-color' : userDetails.customerColor, 'color': '#FFFFFF' }">
+                        {{getResourceText('LIT_REFRESH')}}
+                    </button>
+                </div>
+            </div>
+            <div class="list list-inset darkModeBorder">
+                <div class="item item-divider item-icon-left darkMode"
+                     ng-style="{ 'background-color' : userDetails.customerColor, 'color': '#FFFFFF' }"
+                     ng-click="toggleLanguage(languageToggle)">
+                    <i class="icon" ng-class="isLanguageShown(languageToggle) ? getIconValue('Minus') : getIconValue('Plus')"></i>
+                    {{getResourceText('LIT_LANGUAGE')}}
+                </div>
+                <ion-radio ng-show="isLanguageShown(languageToggle)" class="item"
+                           ng-repeat="lang in languageList"
+                           ng-change="saveSelectedLanguage('{{langSelectedData}}',lang)"
+                           ng-value="lang.CultureName"
+                           ng-model=" $parent.langSelectedData"><img ng-src="{{getFullImagePath(lang)}}" />&nbsp;{{lang.Language}}</ion-radio>
+            </div>
+            
+            <div class="list list-inset darkModeBorder">
+                <div class="item item-divider item-icon-left darkMode" ng-style="{ 'background-color' : userDetails.customerColor, 'color': '#FFFFFF' }">
+                    <i class="icon {{getIconValue('HelpInfo')}}"></i>
+                    {{getResourceText('LIT_APP_INFO')}}
+                </div>
+                <label class="item item-input">
+                    <span class="input-label profileLabel">{{getResourceText('LIT_VERSION')}}</span>
+                    <span class="input-label wrapLabel">{{userDetails.webAPIVersion}} ({{appVersion}})</span>
+                </label>
+            </div>
+            <div class="list list-inset darkModeBorder">
+                <div class="item item-divider item-icon-left darkMode" ng-style="{ 'background-color' : userDetails.customerColor, 'color': '#FFFFFF' }">
+                    <i class="icon ion-wrench"></i>
+                    Error log
+                    <button on-touch="clearErrors()" ng-disabled="checkIsDisabled()" class="button button-outline saveSettings rightAlign buttonColor" ng-style="{ 'color': '#FFFFFF' }">{{getResourceText('LIT_CLEAR')}}</button>
+                    <button on-touch="uploadAllLogData()" ng-disabled="checkIsDisabled()" style="position: relative; right: 5px;" class="button button-outline saveSettings rightAlign buttonColor" ng-style="{ 'color': '#FFFFFF' }">{{getResourceText('LIT_UPLOAD')}}</button>
+                </div>
+                <label class="item item-input">
+                    <ion-list style="width: 99%;">
+                        <a class="item item-list" on-touch="showErrorDetails(error)"  ng-class='item-icon-right' ng-repeat="error in errorList">
+                            <p ng-bind-html="error.name"></p>
+                            <br/>
+                        </a>
+                    </ion-list>
+                </label>
+            </div>
+            <div class="list list-inset darkModeBorder displayNone">
+                <div class="item item-divider item-icon-left darkMode" ng-style="{ 'background-color' : userDetails.customerColor, 'color': '#FFFFFF' }">
+                    <i class="icon {{getIconValue('HelpInfo')}}"></i>
+                    {{getResourceText('LIT_SUBSCRIPTION_LIST')}}
+                </div>
+                <label class="item item-input">
+                    <span class="input-label wrapLabel">{{userDetails.subScriptionList}}</span>
+                </label>
+            </div>
+        </div>
+    </ion-content>
+</ion-view>

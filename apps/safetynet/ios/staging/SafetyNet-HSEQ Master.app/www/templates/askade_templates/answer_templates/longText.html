@@ -1,0 +1,15 @@
+﻿<div class="actionPlanMargin" ng-class="{ 'has-errors' : formAskade.longTextAk_{{::akStep.Id}}_{{::akColumn.FileColumnId}}_{{::guide.Id}}.$invalid
+       && {{::akColumn.IsMandatory}} == true, 'no-errors' :
+       formAskade.longTextAk_{{::akStep.Id}}_{{::akColumn.FileColumnId}}_{{::guide.Id}}.$valid
+       && {{::akColumn.IsMandatory}} == true}">
+    <label class="item item-input formInputLongText formInputLong item-input"
+           ng-class="{'formRequired' : {{::akColumn.IsMandatory}} == true, 'formNotRequired' : {{::akColumn.IsMandatory}} == false}">
+        <textarea ng-model="personGuide.AnswerText" sanitizescript
+                  name="longTextAk_{{::akStep.Id}}_{{::akColumn.FileColumnId}}_{{::guide.Id}}"
+                  ng-auto-expand ng-model-options="{allowInvalid: true}" ng-change="textDependencyTrigger()"
+                  ng-required="checkRequired(akColumn)">
+        </textarea>
+        <a class="button micQueComment button-icon icon ion-android-microphone placeholder-icon" ng-if="readAloud && androidVersion"
+           on-touch="startListening(personGuide, 'LongText')"></a>
+    </label>
+</div>

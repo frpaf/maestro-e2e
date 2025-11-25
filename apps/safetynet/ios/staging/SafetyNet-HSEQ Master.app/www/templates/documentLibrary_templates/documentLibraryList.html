@@ -1,0 +1,124 @@
+﻿<ion-view view-title="{{title}}">
+    <ion-content overflow-scroll="true">
+        <ion-refresher pulling-text="{{getResourceText('LIT_PULL_TO_REFRESH')}}"
+                       on-refresh="updateDocument()">
+        </ion-refresher>
+        <div ng-if="!IsTreeViewEnabled">
+            <div class="list list-inset docSearchMargin">
+                <label class="item item-input searchInDropDown"
+                       ng-style="{ 'border-color': '{{modColor}}'}">
+                    <i class="icon icon-left {{searchIcon}} placeholder-icon"></i>
+                    <input type="text" ng-model="searchModel['Text']"
+                           placeholder="{{searchText}} {{groupNameList.length !== 0 ? getResourceText('LIT_ALL') : GroupName}}"
+                           ng-model-options="{allowInvalid: true}">
+                    <a class="button button-icon icon {{closeIcon}} placeholder-icon"
+                       ng-style="{ 'color': '#B83E2C' }"
+                       on-touch="clearSearch(searchModel)"></a>
+                </label>
+            </div>
+            <ion-list>
+                <div ng-if="groupNameList.length !== 0">
+                    <div class="list"
+                         ng-repeat="grpName in groupNameList"
+                         ng-init="docList = getDocListByGroupName(grpName.GroupName)"
+                         ng-class="{ 'displayNone': (docList | filter:searchModel:strict).length === 0 && ( searchModel != null || searchModel['Text'] !== '' )}">
+                        <div class="item item-divider item-icon-left darkMode item-icon-right"
+                             ng-style="{ 'background-color': '{{modColor}}', 'color': '#FFFFFF' }"
+                             ng-if="(docList | filter:searchModel:strict).length !== 0"
+                             on-tap="toggleGroup($event, grpName, searchModel)">
+                            <i class="icon iconFont" ng-class="isGroupShown(grpName) || checkIfToggleList(docList, searchModel) ? getIconValue('ArrorDropDown') : getIconValue('ArrorDropRight')"></i>
+                            {{grpName.GroupName}}
+                            <div class="icon">
+                                <a id="aichat" class="button button-icon docLibIconFont alignChatBot" ng-if="getGroupChatIconVisibility(docList)" on-tap="openAiGroupLink(docList)" ng-style="{ 'color': '{{modColor}}' }">
+                                    <img src="images/chatbot-outline.svg" style="width: 20px; height: 20px;" />
+                                </a>
+                            </div>
+                        </div>
+                        <div class="item item-icon-right" ng-repeat="doc in docList | filter:searchModel:strict | orderBy:'Text'"
+                             on-tap="documentAction($event, doc)" on-hold="selectFavoritesOnHold(doc)" ng-if="isGroupShown(grpName) || checkIfToggleList(docList, searchModel)">
+                            <div class="removePadding displayFlex" ng-if="doc.Link">
+                                <a class="removeTextDecoration fullWidth">
+                                    {{doc.Text}}
+                                    <p>{{doc.LinkName}}</p>
+                                    <div class="icon alignVertical">
+                                        <span id="aichat" class="button button-icon docLibIconFont alignChatBot" ng-if="doc.AiAssistanceLink" on-tap="openAiLink(doc)" ng-style="{ 'color': '{{modColor}}' }">
+                                            <img src="images/chatbot.png" />
+                                        </span>
+                                        <span style="font-size:1em" ng-if="isBackgroundDownloadLink(doc) && !isFileAlreadyDownloaded(doc)" ng-bind-html="downloadIndicator[doc.Id]"></span>
+                                        <i style="font-size:1em;color: green;margin:1px" ng-if="isFileAlreadyDownloaded(doc)" class="ion-checkmark-circled"></i>
+                                        <i style="font-size:1em;color: red;margin:1px" ng-if="isFileErrored(doc)" class="ion-minus-circled"></i>
+                                        <a class="button button-icon {{doc.ListIcon}} docLibIconFont" ng-style="{ 'color': '{{modColor}}' }" ng-if="isOnlineDownloadLink(doc)" on-tap="download(doc)"></a>
+                                        <a class="button button-icon {{doc.ListIcon}} docLibIconFont" ng-style="{ 'color': '{{modColor}}' }" ng-if="isBackgroundDownloadLink(doc)" on-tap="OpenDLFile(doc)"></a>
+                                        <a class="button button-icon {{::getIconValue('Help')}} docLibIconFont" ng-if="doc.ExtendedInfo" on-tap="showExtendedInfo(doc)" ng-style="{ 'color': '{{modColor}}' }"></a>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="removePadding displayFlex" ng-if="!doc.Link">
+                                <a class="removeTextDecoration fullWidth">
+                                    {{doc.Text}}
+                                    <p ng-if="doc.LinkName">{{doc.LinkName}}</p>
+                                    <p ng-if="doc.FileName">{{doc.FileName}}</p>
+                                    <div class="icon alignVertical">
+                                        <span id="aichat" class="button button-icon docLibIconFont alignChatBot" ng-if="doc.AiAssistanceLink" on-tap="openAiLink(doc)" ng-style="{ 'color': '{{modColor}}' }">
+                                            <img src="images/chatbot.png" />
+                                        </span>
+                                        <a class="button button-icon {{doc.ListIcon}} docLibIconFont" ng-style="{ 'color': '{{modColor}}' }"></a>
+                                        <a class="button button-icon {{::getIconValue('Help')}} docLibIconFont" ng-if="doc.ExtendedInfo" on-tap="showExtendedInfo(doc)" ng-style="{ 'color': '{{modColor}}' }"></a>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div ng-if="groupNameList.length === 0">
+                    <div class="list">
+                        <div class="item item-divider darkMode item-icon-right"
+                             ng-style="{ 'background-color': '{{modColor}}', 'color': '#FFFFFF' }" ng-if="GroupName">
+                            {{GroupName}}
+                            <div class="icon">
+                                <a id="aichat" class="button button-icon docLibIconFont alignChatBot" ng-if="getGroupChatIconVisibility(documentList)" on-tap="openAiGroupLink(documentList)" ng-style="{ 'color': '{{modColor}}' }">
+                                    <img src="images/chatbot-outline.svg" style="width: 20px; height: 20px;" />
+                                </a>
+                            </div>
+                        </div>
+                        <div class="item item-icon-right" ng-repeat="doc in documentList | filter:searchModel:strict | orderBy:'Text'">
+                            <div on-tap="documentAction($event, doc)" on-hold="selectFavoritesOnHold(doc)">
+                                <div class="removePadding displayFlex" ng-if="doc.Link">
+                                    <a class="removeTextDecoration fullWidth" on-tap="download(doc)">
+                                        {{doc.Text}}
+                                        <p>{{doc.LinkName}}</p>
+                                        <div class="icon alignVertical">
+                                            <span id="aichat" class="button button-icon docLibIconFont alignChatBot" ng-if="doc.AiAssistanceLink" on-tap="openAiLink(doc)">
+                                                <img src="images/chatbot.png" />
+                                            </span>
+                                            <span style="font-size:1em" ng-if="isBackgroundDownloadLink(doc) && !isFileAlreadyDownloaded(doc)" ng-bind-html="downloadIndicator[doc.Id]"></span>
+                                            <i style="font-size:1em;color: green;margin:1px" ng-if="isFileAlreadyDownloaded(doc)" class="ion-checkmark-circled"></i>
+                                            <i style="font-size:1em;color: red;margin:1px" ng-if="isFileErrored(doc)" class="ion-minus-circled"></i>
+                                            <a class="button button-icon {{doc.ListIcon}} docLibIconFont" ng-style="{ 'color': '{{modColor}}' }" on-tap="download(doc)"></a>
+                                            <a class="button button-icon {{::getIconValue('Help')}} docLibIconFont" ng-if="doc.ExtendedInfo" on-tap="showExtendedInfo(doc)" ng-style="{ 'color': '{{modColor}}' }"></a>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="removePadding displayFlex" ng-if="!doc.Link">
+                                    <a class="removeTextDecoration fullWidth">
+                                        {{doc.Text}}
+                                        <p ng-if="doc.LinkName">{{doc.LinkName}}</p>
+                                        <p ng-if="doc.FileName">{{doc.FileName}}</p>
+                                        <div class="icon alignVertical">
+                                            <span id="aichat" class="button button-icon docLibIconFont alignChatBot" ng-if="doc.AiAssistanceLink" on-tap="openAiLink(doc)" ng-style="{ 'color': '{{modColor}}' }">
+                                                <img src="images/chatbot.png" />
+                                            </span>
+                                            <a class="button button-icon {{doc.ListIcon}} docLibIconFont" ng-style="{ 'color': '{{modColor}}' }"></a>
+                                            <a class="button button-icon {{::getIconValue('Help')}} docLibIconFont" ng-if="doc.ExtendedInfo" on-tap="showExtendedInfo(doc)" ng-style="{ 'color': '{{modColor}}' }"></a>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ion-list>
+        </div>
+        <div ng-if="IsTreeViewEnabled" ng-include="loadTreeView()"></div>
+    </ion-content>
+</ion-view>

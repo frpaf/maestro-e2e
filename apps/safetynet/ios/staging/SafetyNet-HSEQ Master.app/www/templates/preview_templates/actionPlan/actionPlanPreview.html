@@ -1,0 +1,89 @@
+﻿<ion-view view-title="{{title}} {{getResourceText('LIT_PREVIEW')}}">
+    <ion-content overflow-scroll="true">
+        <ion-list>
+            <div>
+                <div class="item item-divider"
+                     ng-style="{'background-color': wizard.BackColor}">
+                    <h2 class="title" 
+                        ng-style="{'color': wizard.ForeColor }"
+                        ng-bind-html="wizard.Name"></h2>
+                </div>
+                <div class="card">
+                    <label class="item item-text-wrap">
+                        <span>
+                            {{personActionPlanWizard.Title}}
+                        </span>
+                    </label>
+                </div>
+                <div ng-repeat="wizStep in wizard.WizardSteps">
+                    <div class="item item-divider"
+                         ng-style="{'background-color': wizard.GroupBackColor}">
+                        <h2 class="title"
+                            ng-style="{'color': wizard.GroupForeColor }"
+                            ng-bind-html="wizStep.Title"></h2>
+                    </div>
+                    <div ng-if="!wizStep.IsMultiTaskColumnsPresent">
+                        <div class="actionPlanStepCss"
+                             ng-init="personApwStepAnswer = getPersonApwStepAnswer(wizStep.Id, null)">
+                            <div class="card" ng-if="wizStep.IsContentAssociation && wizStep.ColumnGuides.length === 0">
+                                <label class="item item-text-wrap">
+                                    <span>
+                                        {{personApwStepAnswer.AnswerText}}
+                                    </span>
+                                </label>
+                            </div>
+                            <div class="card" ng-if="wizStep.IsContentAssociation && wizStep.ColumnGuides.length !== 0">
+                                <div ng-init="personGuide = getColumnGuideEntity(guide.Id, wizStep.Id, null)" ng-repeat="guide in wizStep.ColumnGuides">
+                                    <div class="actionPlanMargin item item-divider borderNone" align-title="left">
+                                        <h2 class="title" ng-bind-html="guide.Text"></h2>
+                                    </div>
+                                    <div class="item fullWidth actionPlanMargin apwLabel">
+                                        {{personGuide.AnswerText}}
+                                    </div>
+                                </div>
+                            </div>
+                            <div ng-repeat="wizColumn in wizStep.Columns">
+                                <div class="list card" ng-init="personApwStepAnswerColumn = getPersonApwStepAnswer(wizStep.Id, wizColumn.Id)">
+                                    <div class="item cardColor showFullText">
+                                        <div ng-bind-html="wizColumn.TranslatedText"></div>
+                                    </div>
+                                    <div ng-include="loadApwPreviewTemplate(wizColumn.ColumnType)">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div ng-if="wizStep.IsMultiTaskColumnsPresent">
+                        <div ng-include="loadMultiTaskPreview()"></div>
+                    </div>
+                </div>
+            </div>
+            <div ng-if="personActionPlanWizard.Attachments.length > 0">
+                <div class="list card">
+                    <div class="item cardColor" 
+                         ng-style="{'background-color': wizard.GroupBackColor, 'color': wizard.GroupForeColor }">
+                        <h2>{{getResourceText('LIT_ATTACHMENTS')}}</h2>
+                    </div>
+                    <div class="item item-body">
+                        <div ng-repeat="pAttachment in personActionPlanWizard.Attachments">
+                            <div class="row removePadding listItem imageComments">
+                                    <div class="col col-25 listItem removePadding rightMargin">
+                                        <img ng-src="{{getThumnail(pAttachment)}}"
+                                             class="Thumbnail-left addImage darkImg"
+                                             ng-model="pAttachment.FileLocation"
+                                             ng-if="showImageViewer(pAttachment)"
+                                             on-tap="showImage(pAttachment)" />
+                                    </div>
+                                    <div ng-if="showImageViewer(pAttachment)" class="col col-75">
+                                        <div class="item fullWidth actionPlanMargin apwLabel deleteMargin">
+                                            {{pAttachment.FileHeader}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </ion-list>
+    </ion-content>
+</ion-view>

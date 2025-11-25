@@ -1,9 +1,0 @@
-﻿<div ng-class="{ 'has-errors' : formQuestionnaire.shortText_{{::qg.Id}}_{{::q.Id}}_{{::vq.Id}}.$invalid
-       && {{::q.IsRequired}} === true && {{::vq.IsRequired}} === true, 'no-errors' :
-       formQuestionnaire.shortText_{{::qg.Id}}_{{::q.Id}}_{{::vq.Id}}.$valid
-       && {{::q.IsRequired}} === true && {{::vq.IsRequired}} === true}">
-    <input type="text" name="shortText_{{::qg.Id}}_{{::q.Id}}_{{::vq.Id}}" class="formInput formInputShort"
-           ng-class="{'formRequired' : {{::q.IsRequired}} === true || {{::vq.IsRequired}} === true, 'formNotRequired' : {{::q.IsRequired}} === false || {{::vq.IsRequired}} === false}"
-           ng-model="getPersonVQAnswer(q.Id,vq.Id).AnswerText" ng-required="{{q.IsRequired && vq.IsRequired}}"
-           />
-</div>

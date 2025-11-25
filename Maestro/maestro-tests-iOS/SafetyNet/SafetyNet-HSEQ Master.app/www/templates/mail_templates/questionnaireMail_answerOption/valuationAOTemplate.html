@@ -1,6 +1,0 @@
-﻿<div ng-repeat="vao in vq.ValuationAnswerOption"
-     ng-init='checkStatus=getVQDefaultStatus(q.Id,vq.Id,vao.Id, pq.ValuationAnswers)'>
-    <font ng-if="checkStatus == true" color="{{vao.ColourCode}}" face="Times New Roman, Georgia, Serif">
-        {{getValuationAnswerOptionTextByVAOId(vao.Id)}}
-    </font>
-</div>

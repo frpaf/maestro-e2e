@@ -1,0 +1,154 @@
+name: SafetyNet iOS Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'tests/safetynet/ios/**'
+      - 'apps/safetynet/ios/**'
+      - '.github/workflows/maestro-ios.yml'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'tests/safetynet/ios/**'
+      - 'apps/safetynet/ios/**'
+  workflow_dispatch:
+
+jobs:
+  maestro-ios-tests:
+    runs-on: macos-14
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: '15.4'
+
+      - name: Install and Verify Maestro
+        run: |
+          curl -Ls "https://get.maestro.mobile.dev" | bash
+          export PATH="$HOME/.maestro/bin:$PATH"
+          maestro --version
+          echo "$HOME/.maestro/bin" >> $GITHUB_PATH
+
+      - name: Verify iOS app and test files exist
+        run: |
+          echo "=== Checking for iOS app bundle ==="
+          if [ -d "apps/safetynet/ios/SafetyNet-HSEQ Master.app" ]; then
+            echo "iOS app bundle found!"
+            ls -lh "apps/safetynet/ios/SafetyNet-HSEQ Master.app"
+          else
+            echo "ERROR: iOS app bundle not found!"
+            find . -name "*.app" -type d || echo "No .app bundles found in repository"
+            exit 1
+          fi
+
+          echo "=== Checking for Maestro test files ==="
+          if [ -d "tests/safetynet/ios/" ]; then
+            ls -la tests/safetynet/ios/
+            find tests/safetynet/ios/ -name "*.yaml" -o -name "*.yml" || echo "No YAML test files found!"
+          else
+            echo "ERROR: Test directory not found!"
+            exit 1
+          fi
+
+      - name: List available iOS simulators
+        run: |
+          echo "=== Available iOS Simulators ==="
+          xcrun simctl list devices available
+
+      - name: Start iOS Simulator
+        run: |
+          set -e
+
+          echo "=== Creating iPhone 15 Pro simulator if needed ==="
+          DEVICE_ID=$(xcrun simctl create "iPhone-15-Pro-Test" "iPhone 15 Pro" "iOS17.5" 2>/dev/null || xcrun simctl list devices | grep "iPhone 15 Pro" | grep -v unavailable | head -1 | grep -oE '\([A-F0-9-]+\)' | tr -d '()')
+
+          if [ -z "$DEVICE_ID" ]; then
+            echo "Finding existing iPhone 15 Pro simulator..."
+            DEVICE_ID=$(xcrun simctl list devices | grep "iPhone 15 Pro" | grep -v unavailable | head -1 | grep -oE '\([A-F0-9-]+\)' | tr -d '()')
+          fi
+
+          if [ -z "$DEVICE_ID" ]; then
+            echo "ERROR: Could not create or find iPhone 15 Pro simulator"
+            exit 1
+          fi
+
+          echo "Using simulator: $DEVICE_ID"
+          echo "SIMULATOR_ID=$DEVICE_ID" >> $GITHUB_ENV
+
+          echo "=== Booting simulator ==="
+          xcrun simctl boot "$DEVICE_ID" || echo "Simulator already booted"
+
+          echo "=== Waiting for simulator to be ready ==="
+          for i in {1..60}; do
+            if xcrun simctl bootstatus "$DEVICE_ID" 2>&1 | grep -q "Device already booted"; then
+              echo "Simulator is ready!"
+              break
+            fi
+            echo "Waiting for simulator boot... ($i/60)"
+            sleep 2
+          done
+
+          echo "=== Simulator status ==="
+          xcrun simctl list devices | grep "$DEVICE_ID"
+
+      - name: Install iOS app on simulator
+        run: |
+          set -e
+          echo "=== Installing iOS app on simulator ==="
+          xcrun simctl install "$SIMULATOR_ID" "apps/safetynet/ios/SafetyNet-HSEQ Master.app"
+
+          echo "=== Verifying app installation ==="
+          xcrun simctl listapps "$SIMULATOR_ID" | grep -i safetynet || echo "Note: App installed but not found in list (may be normal)"
+
+      - name: Run Maestro Tests
+        run: |
+          set -e
+          export PATH="$HOME/.maestro/bin:$PATH"
+
+          echo "=== Checking Maestro ==="
+          which maestro
+          maestro --version
+
+          echo "=== Checking test files ==="
+          ls -la tests/safetynet/ios/
+
+          echo "=== Running Maestro tests ==="
+          maestro test tests/safetynet/ios/ --format junit --output maestro-report.xml
+
+          echo "=== Tests completed ==="
+
+      - name: Shutdown simulator
+        if: always()
+        run: |
+          if [ ! -z "$SIMULATOR_ID" ]; then
+            echo "=== Shutting down simulator ==="
+            xcrun simctl shutdown "$SIMULATOR_ID" || echo "Simulator already shut down"
+          fi
+
+      - name: Upload Maestro Test Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: safetynet-ios-test-results
+          path: |
+            maestro-report.xml
+            ~/.maestro/tests/**/*
+            **/*.mp4
+          retention-days: 7
+          if-no-files-found: warn
+
+      - name: Upload Maestro Logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: safetynet-ios-logs
+          path: |
+            ~/.maestro/logs/**/*
+          retention-days: 7
+          if-no-files-found: warn

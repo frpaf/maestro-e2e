@@ -1,0 +1,94 @@
+﻿<div class="zeroHeight">
+    <div>
+        <table id="description-table">
+            <thead>
+                <tr>
+                    <td>{{::getResourceText('LIT_DESCRIPTION')}}</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{questionnaire.Description}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div ng-repeat="qg in validQuestionnaireGroups(questionnaire.Groups)">
+        <table id="group-table_{{qg.Id}}">
+            <tbody>
+                <tr>
+                    <td ng-bind-html="qg.Name"></td>
+                </tr>
+            </tbody>
+        </table>
+        <div ng-repeat="q in qg.Questions"
+             ng-if="q.IsDependencyMet"
+             ng-init="pqaView = getPersonQuestionAnswer(q.Id, pq.Answers)">
+            <table id="question-table_{{qg.Id}}_{{q.Id}}">
+                <thead>
+                    <tr>
+                        <td ng-bind-html="q.Text"></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <table ng-include="loadPdfAOTemplate(q)"></table>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <table ng-if="questionnaire.ValuationQuestion.length !== 0 && !q.IgnoreValuationQuestion"
+                   id="valuation-table_{{qg.Id}}_{{q.Id}}_{{q.Id}}">
+                <thead>
+                    <tr>
+                        <td>{{::getResourceText('LIT_VALUATION_QUESTIONS')}}</td>
+                        <td></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="vq in questionnaire.ValuationQuestion"
+                        ng-init="pvqaView = getPersonVQAnswer(q.Id,vq.Id, pq.ValuationAnswers)">
+                        <td>{{vq.Text}}</td>
+                        <td>
+                            <table ng-include="loadPdfVAOTemplate(vq.TypeCode)"></table>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="comment-table_{{qg.Id}}_{{q.Id}}"
+                   ng-if="q.EnableComment">
+                <thead>
+                    <tr>
+                        <td>{{questionnaire.CommentLabel !== null ? questionnaire.CommentLabel : getResourceText('LIT_COMMENT')}}</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            {{pqaView.Comment}}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="attachment-table_{{qg.Id}}_{{q.Id}}"
+                   ng-if="q.EnableFile">
+                <thead ng-init="details = getAttachmentDetails(pqaView)">
+                    <tr>
+                        <td>{{getResourceText('LIT_ATTACHMENTS')}}</td>
+                    </tr>
+                    <tr ng-if="details.isPdf">
+                        <td>
+                            {{details.FileName}}
+                        </td>
+                    </tr>
+                </thead>
+                <!--<tbody>
+                    <tr>
+                        <td>{{pqaView.FileName ? pqaView.FileName : '-'}}</td>
+                    </tr>
+                </tbody>-->
+            </table>
+        </div>
+    </div>
+</div>

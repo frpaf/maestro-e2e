@@ -1,0 +1,170 @@
+<ion-view animation="slide-left-right" ng-init="loadStatusBar(false)">
+    <ion-pane>
+        <div ng-model="screenIndex" ng-init="screenIndex=0">
+            <div ng-if="screenIndex === 0">
+                <ion-buttons id="skipbtn">
+                    <button class="button button-clear" id="btnclr" ui-sref="welcome">
+                        <b>{{getResourceLabelText('LIT_MOBILE_WELCOME_BACK')|uppercase}}</b>
+                    </button>
+                </ion-buttons>
+                <ion-buttons id="nextbtn">
+                    <button class="button button-clear" ng-click="welcomeNext()" id="nxtbtnclr">
+                        <b>{{getResourceLabelText('LIT_MOBILE_WELCOME_NEXT')|uppercase}}</b>
+                    </button>
+                </ion-buttons>
+            </div>
+
+            <div id="guidebtn" ng-if="screenIndex === 1">
+                <button class="button icon-right ion-chevron-right button-block headerColor"
+                    on-tap="onWelcomeScreenFinish()">
+                    {{getResourceLabelText('LIT_MOBILE_GUIDE_END')}}
+                </button>
+            </div>
+        </div>
+        <ion-slide-box on-slide-changed="slideHasChanged($index)">
+            <ion-slide>
+                <ion-header-bar class="headerColor" id="head">
+                    <h4 align="left" id="titleclr">{{getResourceLabelText('LIT_MOBILE_HEADER_TITLE')}}</h4>
+                </ion-header-bar>
+                <ion-pane class="slidePadding" overflow-scroll="true">
+                    <div style="padding: 10px;">
+                        <!--<div class="card removePadding">
+        <div class="item item-divider" id="divcard">
+            {{getResourceLabelText('MSG_MOBILE_WELCOME_SELECTED_CUSTOMER')}}<span style="font-style:italic;">{{getResourceLabelText('LIT_MOBILE_DEMODK')|uppercase}}</span>
+            <i style="float:right;color:green;" class="ion-information-circled"></i>
+        </div>
+    </div>
+    <div class="labelPad">
+        <label class="item item-input toggleInputTextPadding">
+            <b>
+                <p class="linktype">{{getResourceLabelText('MSG_MOBILE_WELCOME_DEMODK_LINK')}}</p>
+            </b>
+
+            <div id="doneIcon">
+                <i class="icon ion-android-done toggleIconFont" style="float: left;"></i>
+            </div>
+        </label>
+        <span>&nbsp;</span>
+        <div class="item item-icon-right">
+            {{getResourceLabelText('LIT_MOBILE_WELCOME_CONNECT_TO')}}&nbsp;<span style="font-style:italic;">{{getResourceLabelText('LIT_MOBILE_DEMODK')|uppercase}}</span>
+        </div>
+        <div class="row">
+            <div class="col">
+                <button type="button" class="button button-block removePadding buttonColor leftAlign" id="backbtn">
+                    {{getResourceLabelText('LIT_BACK')}}
+                </button>
+            </div>
+            <div class="col">
+                <button type="submit" id="subbtn" class="button button-block removePadding buttonColor rightAlign">
+                    {{getResourceLabelText('LIT_MOBILE_WELCOME_SUBMIT')}}
+                </button>
+            </div>
+        </div>
+    </div>-->
+                        <div class="flexClassImage spacing flexDir">
+                            <!-- logo -->
+                            <img src="images/EG-SafetyNet-logo.svg" alt="Logo" class="mainLogo" />
+                            <hr />
+                            <p class="welcomeText">{{getResourceLabelText('LIT_MOBILE_WELCOME_TEXT')}}</p>
+                        </div>
+                        <div class="welcomeText flexClass flexDir spacing">
+                            <p>{{getResourceLabelText('LIT_MOBILE_LOGIN_WAYS')}}</p>
+                        </div>
+                        <div class="scanOrganization flexClass flexDir spacing">
+                            <!-- Scan Organization -->
+                            <div class="labelText">
+                                {{getResourceLabelText('LIT_MOBILE_CUSTOMER_ENVIRONMENT')}}
+                            </div>
+                            <label class="item item-input toggleInputTextPadding"
+                                style="display: flex; justify-content: space-between;">
+                                <p class="removePaddingMargin linktype">
+                                    {{getResourceLabelText('MSG_MOBILE_WELCOME_DEMODK_LINK')}}
+                                </p>
+                                <div style="display: flex; justify-content: center; align-items: center;">
+                                    <i class="icon ion-android-close toggleIconFont"
+                                        style="float:right; color: red !important;"></i>
+                                    <i class="icon ion-android-done toggleIconFont" style="float:right"></i>
+                                    <img class="urlScanIcon" src="images/qrcode.png" />
+                                </div>
+                            </label>
+                        </div>
+                        <span>
+                            {{getResourceLabelText('MSG_MOBILE_WELCOME_OR')}}
+                        </span>
+                        <div class="scanToken flexClass flexDir spacing">
+                            <!-- Scan Token -->
+                            <div class="labelText">
+                                {{getResourceLabelText('LIT_MOBILE_TOKEN_LOGIN')}}
+                            </div>
+                            <label class="item item-input toggleInputTextPadding" ng-model="data.tokenBoxVal">
+                                <input class="removePaddingMargin scanInput" type="text" ng-model="data.customerToken"
+                                    placeholder="{{getResourceLabelText('LIT_MOBILE_TOKEN_SCAN_PLACEHOLDER')}}"
+                                    disabled>
+                                <img class="urlScanIcon" src="images/qrcode.png" />
+                            </label>
+                        </div>
+                        <div class="flexClass spacing">
+                            <!-- Continue Button -->
+                            <button type="submit" class="button button-block removePadding buttonColor rightAlign"
+                                id="subbtn">
+                                {{getResourceLabelText('LIT_CONTINUE')}}
+                            </button>
+                        </div>
+                    </div>
+                </ion-pane>
+            </ion-slide>
+
+            <ion-slide>
+                <div class="topnav">
+                    <ion-header-bar class="headerColor" id="head">
+                        <h4 align="left" id="titleclr">{{getResourceLabelText('LIT_MOBILE_HEADER_TITLE')}}</h4>
+                        <div>
+                            <button
+                                class="topnav-right button button-icon button-clear {{::getIconValue('Setting')}} fontWhite"></button>
+                        </div>
+                    </ion-header-bar>
+                </div>
+                <div>
+                    <button type="button">
+                        <b>{{getResourceLabelText('LIT_MOBILE_WELCOME_TOGGLE')}}</b>
+                    </button>
+                </div>
+                <ion-pane class="slidePadding" overflow-scroll="true">
+                    <div>
+                        <div class="list list-inset" id="formfields">
+                            <div class="imageCentre">
+                                <!--<img src="data:image/png;base64,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" />-->
+                                <img src="images/EG-SafetyNet-logo.svg" alt="Logo" class="mainLogo" />
+                            </div>
+                            <label class="item item-input marginBottom">
+                                <input type="text" placeholder="{{getResourceLabelText('LIT_MOBILE_WELCOME_USERNAME')}}"
+                                    ng-disabled="true">
+                            </label>
+                            <label class="item item-input">
+                                <input type="text" placeholder="{{getResourceLabelText('LIT_MOBILE_WELCOME_PASSWORD')}}"
+                                    ng-disabled="true">
+                            </label>
+
+                            <button class="button button-block buttonColor" id="loginbtn">
+                                {{getResourceLabelText('LIT_MOBILE_WELCOME_LOGIN')}}
+                            </button>
+                        </div>
+                        <span>&nbsp;</span>
+                        <div class="cardPadding">
+                            <div class="card">
+                                <span class="item item-text-wrap">
+                                    <p align="left" id="spantxt">
+                                        Welcome - please login with your SafetyNet username and password
+                                        <br>
+                                        {{getResourceLabelText('MSG_MOBILE_LOGIN_PASSWORD_TEXT')}}
+                                    </p>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </ion-pane>
+            </ion-slide>
+
+        </ion-slide-box>
+    </ion-pane>
+</ion-view>

@@ -1,0 +1,7 @@
+﻿<div class="questionnaireMargin" ng-class="{ 'has-errors' : formQuestionnaire.numText_{{::qg.Id}}_{{::q.Id}}.$invalid && {{::q.IsRequired}} == true,
+                         'no-errors' : formQuestionnaire.numText_{{::qg.Id}}_{{::q.Id}}.$valid && {{::q.IsRequired}} == true }">
+    <input sanitizenumber type="tel" maxlength="14" name="numText_{{::qg.Id}}_{{::q.Id}}" class="formInput formInputShort"
+           ng-class="{'formRequired' : {{::q.IsRequired}} == true, 'formNotRequired' : {{::q.IsRequired}} == false }"
+           ng-model="getPersonQuestionAnswer(q.Id).AnswerText" ng-required="{{::q.IsRequired}}"
+            />
+</div>

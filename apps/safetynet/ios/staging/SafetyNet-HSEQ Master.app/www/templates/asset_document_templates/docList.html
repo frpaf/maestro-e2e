@@ -1,0 +1,58 @@
+<div>
+    <div class="bodyHeader" ng-style="{'background-color': '{{headerColor}}'}">
+        {{getTitle()}}
+        <a id="popUpClose" class="icon ion-close-circled alignCloseButton" on-tap="closePopUp()" />
+    </div>
+    <div class="list">
+        <div class="listPopUpHeight" ng-include="getPlatformSpecificTemplate()"></div>
+        <div ng-if="isDocOpened">
+            <ion-checkbox class="item item-icon-right docCheck" ng-model="currentOpenedDoc.isChecked" ng-true-value="true" ng-false-value="false" ng-disabled="true">
+                <a class="removeTextDecoration fullWidth">
+                    {{currentOpenedDoc.Text}}
+                    <p>{{currentOpenedDoc.LinkName}}</p>
+                    <div class="icon alignVertical">
+                        <a class="button button-icon {{::getImageIcon(currentOpenedDoc.DocumentTypeCode)}} docLibIconFont" ng-style="{ 'color': '{{headerColor}}' }" ng-if="isOnlineDownloadLink(currentOpenedDoc)"></a>
+                        <a class="button button-icon {{::getImageIcon(currentOpenedDoc.DocumentTypeCode)}} docLibIconFont" ng-style="{ 'color': '{{headerColor}}' }" ng-if="isBackgroundDownloadLink(currentOpenedDoc)"></a>
+                        <a class="button button-icon {{::getIconValue('Help')}} docLibIconFont" ng-if="currentOpenedDoc.ExtendedInfo" ng-style="{ 'color': '{{headerColor}}' }"></a>
+                    </div>
+                </a>
+            </ion-checkbox>
+            <div>
+                <hr />
+                <div class="valuateBtn">
+                    <button on-tap="cancle()">{{getResourceText('LIT_MOBILE_BACK')}}</button>
+                    <button on-tap="ReadAgain()">{{getResourceText('LIT_MOBILE_READ_AGAIN')}}</button>
+                    <button on-tap="showSign()">{{getResourceText('LIT_MOBILE_FINISHED')}}</button>
+                </div>
+            </div>
+        </div>
+        <div ng-if="isDocReadyForSign">
+            <ion-checkbox class="item item-icon-right docCheck" ng-model="currentOpenedDoc.isChecked" ng-true-value="true" ng-disabled="true" ng-false-value="false">
+                <a class="removeTextDecoration fullWidth">
+                    {{currentOpenedDoc.Text}}
+                    <p>{{currentOpenedDoc.LinkName}}</p>
+                    <div class="icon alignVertical">
+                        <a class="button button-icon {{::getImageIcon(currentOpenedDoc.DocumentTypeCode)}} docLibIconFont" ng-style="{ 'color': '{{headerColor}}' }" ng-if="isOnlineDownloadLink(currentOpenedDoc)"></a>
+                        <a class="button button-icon {{::getImageIcon(currentOpenedDoc.DocumentTypeCode)}} docLibIconFont" ng-style="{ 'color': '{{headerColor}}' }" ng-if="isBackgroundDownloadLink(currentOpenedDoc)"></a>
+                        <a class="button button-icon {{::getIconValue('Help')}} docLibIconFont" ng-if="currentOpenedDoc.ExtendedInfo" ng-style="{ 'color': '{{headerColor}}' }"></a>
+                    </div>
+                </a>
+            </ion-checkbox>
+            <div>
+                <hr />
+                <div>
+                    <span style="color:red">{{getResourceText('MSG_MOBILE_SIGN_DOCUMENT_MESSAGE')}}<pow>*</pow></span>
+                    <div class="signature">
+                        <j-signature defaultsig="postData.signatureImage" save="getImageBase64" bg-color="#00f" color="#000000" instance='postData'
+                                     width="350" height="250" is-done="signatureVal" set-fn="setDirective(theDirFn, queInst)"></j-signature>
+                    </div>
+                    <div class="valuateBtn">
+                        <button on-tap="cancle()">{{getResourceText('LIT_MOBILE_BACK')}}</button>
+                        <button on-tap="save()">{{getResourceText('LIT_MOBILE_SAVE')}}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

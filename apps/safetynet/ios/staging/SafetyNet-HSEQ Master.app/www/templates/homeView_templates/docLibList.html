@@ -1,0 +1,13 @@
+﻿<div class="alignDocGroupWithAiIcon item item-icon-right" ng-repeat="doc in checkModule(userApp)" ng-if="checkModule(userApp).length !== 0" >
+    <a ui-sref="app.documentLibrary({ viewTitle: '{{::userApp.TranslatedText}}',
+                type: '{{::userApp.Text}}', modColor: '{{::userApp.ColourCode}}', groupName: '{{doc.GroupName}}' })">
+        <div class="row removePadding listItem" on-hold="selectFavoritesOnHold(doc, userApp)">
+            <div class="fullWidth">
+                <h2 class="showFullText">
+                    {{doc.GroupName}}
+                </h2>
+            </div>
+        </div>
+    </a>
+    <img class="icon" ng-if="doc.AiAssistanceGroupLink" on-tap="openAiLink(doc)" src="images/chatbot.png" />
+</div>

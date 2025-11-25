@@ -1,0 +1,11 @@
+﻿<div class="actionPlanMargin" ng-class="{ 'has-errors' : formAskade.shortTextAk_{{::akStep.Id}}_{{::akColumn.FileColumnId}}.$invalid && {{::akColumn.IsMandatory}} === true,
+                         'no-errors' : formAskade.shortTextAk_{{::akStep.Id}}_{{::akColumn.FileColumnId}}.$valid && {{::akColumn.IsMandatory}} === true }">
+    <label class="item item-input formInput formInputShort actionPlanTitle"
+           ng-class="{'formRequired' : {{::akColumn.IsMandatory}} === true, 'formNotRequired' : {{::akColumn.IsMandatory}} === false }">
+        <input type="text" name="shortTextAk_{{::akStep.Id}}_{{::akColumn.FileColumnId}}" sanitizescript ng-change="textDependencyTrigger()"
+               ng-model="personAkStepColumnAnswer.AnswerText" ng-model-options="{allowInvalid: true}" ng-required="{{::akColumn.IsMandatory}}"
+               >
+        <a class="button micQueComment button-icon icon ion-android-microphone placeholder-icon" ng-if="readAloud && androidVersion"
+           on-touch="startListening(personAkStepColumnAnswer, 'ShortText')"></a>
+    </label>
+</div>

@@ -1,0 +1,11 @@
+﻿<div class="actionPlanMargin" ng-class="{ 'has-errors' : formActionPlan.shortText_{{::wizStep.Id}}_{{::wizColumn.Id}}.$invalid && {{::wizColumn.IsRequired}} == true,
+                         'no-errors' : formActionPlan.shortText_{{::wizStep.Id}}_{{::wizColumn.Id}}.$valid && {{::wizColumn.IsRequired}} == true }">
+    <label class="item item-input formInput formInputShort actionPlanTitle"
+           ng-class="{'formRequired' : {{::wizColumn.IsRequired}} == true, 'formNotRequired' : {{::wizColumn.IsRequired}} == false }">
+        <input sanitizescript type="text" name="shortText_{{::wizStep.Id}}_{{::wizColumn.Id}}"
+               ng-model="personApwStepAnswerColumn.AnswerText" ng-required="{{::wizColumn.IsRequired}}"
+               >
+        <a class="button micQueComment button-icon icon ion-android-microphone placeholder-icon" ng-if="readAloud && androidVersion"
+           on-touch="startListening(personApwStepAnswerColumn, 'ShortText')"></a>
+    </label>
+</div>

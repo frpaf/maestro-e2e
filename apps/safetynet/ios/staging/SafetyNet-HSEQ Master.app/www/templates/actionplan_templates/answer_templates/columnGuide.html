@@ -1,0 +1,15 @@
+<div ng-repeat="guide in wizStep.ColumnGuides"
+     ng-init="personGuide = getColumnGuideEntity(guide.Id, wizStep.Id, null)">
+    <div class="actionPlanMargin item item-divider borderNone"
+         ng-class="{ 'item-icon-right': guide.Description }"
+         align-title="left"
+         on-tap="showGroupDescription(guide.Text, guide.Description)">
+        <h2 ng-class="{ 'headerTitleWidth' : guide.Description }"
+            class="title showFullText"
+            ng-bind-html="guide.Text"></h2>
+        <div class="icon" ng-if="guide.Description">
+            <a class="button button-icon {{::getIconValue('HelpInfo')}}"></a>
+        </div>
+    </div>
+    <div ng-include="loadApwTemplate('LongText')"></div>
+</div>

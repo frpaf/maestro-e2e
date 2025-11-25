@@ -1,0 +1,16 @@
+﻿<div class="actionPlanMultiTaskCss">
+    <div ng-class="{ 'has-errors' : formActionPlan.longTextMT_{{MultiTaskEntity.WizardStepId}}_{{MultiTaskEntity.UniqueId}}.$invalid && {{wizColumn.IsRequired}} == true,
+                         'no-errors' : formActionPlan.longTextMT_{{MultiTaskEntity.WizardStepId}}_{{MultiTaskEntity.UniqueId}}.$valid && {{wizColumn.IsRequired}} == true}">
+        <label class="item item-input formInput formInputLong item-input"
+               ng-class="{'formRequired' : {{wizColumn.IsRequired}} == true, 'formNotRequired' :
+                  {{wizColumn.IsRequired}} == false}">
+            <textarea sanitizescript ng-model="MultiTaskEntity.SolutionText" class="actionPlanTextarea"
+                      name="longTextMT_{{MultiTaskEntity.WizardStepId}}_{{MultiTaskEntity.UniqueId}}"
+                      ng-auto-expand
+                      ng-required="{{::wizColumn.IsRequired}}">
+                </textarea>
+            <a class="button micQueComment button-icon icon ion-android-microphone placeholder-icon" ng-if="readAloud && androidVersion"
+               on-touch="startListening(MultiTaskEntity, 'LongText', true)"></a>
+        </label>
+    </div>
+</div>

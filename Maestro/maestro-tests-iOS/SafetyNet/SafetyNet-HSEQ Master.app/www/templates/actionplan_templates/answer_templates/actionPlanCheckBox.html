@@ -1,6 +1,0 @@
-﻿<div class="actionPlanMargin" ng-class="{ 'has-errors' : formActionPlan.apwCb_{{::wizStep.Id}}_{{::wizColumn.Id}}.$invalid && {{::wizColumn.IsRequired}} == true, 'no-errors' :
-              formActionPlan.apwCb_{{::wizStep.Id}}_{{::wizColumn.Id}}.$valid && {{::wizColumn.IsRequired}} == true}">
-    <ion-checkbox name="apwCb_{{::wizStep.Id}}_{{::wizColumn.Id}}" ng-model="personApwStepAnswerColumn.IsBooleanField" ng-change="setValue(personApwStepAnswerColumn)"
-                  ng-true-value="1" ng-false-value="0" ng-required="{{::wizColumn.IsRequired}}">
-    </ion-checkbox>
-</div>

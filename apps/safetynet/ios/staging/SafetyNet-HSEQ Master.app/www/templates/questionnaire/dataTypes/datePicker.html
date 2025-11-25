@@ -1,0 +1,14 @@
+﻿<ion-item 
+          answercolid="pqaView.Id"
+          class="pickerDark questionnairePicker">
+    <label name="datePickerPaq_{{::qg.Id}}_{{::q.Id}}"
+            class="button button-block buttonValue button-outline questionnaireButton fontButtonIcon icon-left {{::getIconValue('Calender')}}" 
+                    ng-class="{ 'has-errors' : formQuestionnaire.datePickerPaq_{{::qg.Id}}_{{::q.Id}}.$invalid && {{::q.IsRequired}} === true, 
+                    'no-errors' : formQuestionnaire.datePickerPaq_{{::qg.Id}}_{{::q.Id}}.$valid && {{::q.IsRequired}} === true }"
+           ng-required="checkIsDateRequired(q,pqaView)"
+          ng-click="showDate(q, pqaView)"
+          ng-model="pqaView.AnswerDate"
+          ng-disabled="isDatePickDisabled">
+        {{pqaView.AnswerText | date:'dd-mm-yyyy'}}
+    </label>
+</ion-item>

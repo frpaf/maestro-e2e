@@ -1,0 +1,7 @@
+﻿<div id="answerImage_{{qg.Id}}_{{q.Id}}" ng-init="pqaAnsImg = getPersonQuestionAnswer(q.Id)">
+    <div class="signBtnCenter" name="answerImage_{{qg.Id}}_{{q.Id}}"
+         ng-model="pqaAnsImg.AnswerImage" ng-required="q.IsRequired">
+        <j-signature ng-init="validateSignCanvas(qg.Id, q.Id, q.IsRequired)" defaultsig="getPersonQuestionAnswer(q.Id).AnswerImage" save="getImageBase64" set-fn="setDirectiveFn(theDirFn, queInst)" bg-color="#00f" color="#000000" instance='q'
+                     width="346" height="250" is-done="pqaAnsImg"></j-signature>
+    </div>
+</div>

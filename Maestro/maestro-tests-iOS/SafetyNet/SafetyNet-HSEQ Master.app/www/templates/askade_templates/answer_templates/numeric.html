@@ -1,7 +1,0 @@
-﻿<div class="actionPlanMargin" ng-class="{ 'has-errors' : formAskade.numTextAk_{{::akStep.Id}}_{{::akColumn.FileColumnId}}.$invalid && {{::akColumn.IsMandatory}} == true,
-                         'no-errors' : formAskade.numTextAk_{{::akStep.Id}}_{{::akColumn.FileColumnId}}.$valid && {{::akColumn.IsMandatory}} == true }">
-    <input sanitizenumber type="tel" name="numTextAk_{{::akStep.Id}}_{{::akColumn.FileColumnId}}" class="formInput formInputShort"
-           ng-class="{'formRequired' : {{::akColumn.IsMandatory}} == true, 'formNotRequired' : {{::akColumn.IsMandatory}} == false }"
-           ng-model="personAkStepColumnAnswer.AnswerText" ng-required="{{::akColumn.IsMandatory}}" 
-           ng-model-options="{allowInvalid: true}" ng-change="textDependencyTrigger()" />
-</div>

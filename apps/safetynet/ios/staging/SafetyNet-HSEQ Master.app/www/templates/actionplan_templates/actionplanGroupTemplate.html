@@ -1,0 +1,121 @@
+﻿<div ng-if="currentStepIndex == 0"
+     class="paddingClass has-subheader actionPlanStepCss"> 
+    <div ng-class="{ 'has-errors' : formActionPlan.title_{{::wizard.Id}}.$invalid,
+                         'no-errors' : formActionPlan.title_{{::wizard.Id}}.$valid }">
+        <label class="item item-input formInput formInputShort actionPlanTitle actionPlanTitleStyle"
+               ng-class="{'formRequired' : formActionPlan.title_{{::wizard.Id}}.$valid || formActionPlan.title_{{::wizard.Id}}.$invalid}">
+            <input sanitizescript type="text" name="title_{{::wizard.Id}}" placeholder="{{::getResourceText('LIT_ENTER_TITLE')}}"
+                   ng-model="personActionPlanWizard.Title" ng-required="true">
+            <a class="button micQueComment button-icon icon ion-android-microphone placeholder-icon" ng-if="readAloud && androidVersion"
+               on-touch="startListening(personActionPlanWizard, 'Title')"></a>
+        </label>
+    </div>
+</div>
+<ion-list>
+    <div ng-if="!wizStep.IsMultiTaskColumnsPresent">
+        <div class="item item-divider"
+             ng-class="{ 'item-icon-right' : wizStep.Description !== null}"
+             align-title="left"
+             on-touch="showGroupDescription(wizStep.Title, wizStep.Description)"
+             ng-style="{'background-color': wizard.GroupBackColor }">
+            <div class="buttons displayInlineBlock verticalTopAlign" ng-if="readAloud" ng-class="{ 'textSpeechAlign': readAloud}">
+                <div class="icon displayInlineBlock helpLinkIcon">
+                    <img ng-src="images/speaker.png" class="darkImg" on-touch="ttsConvert(wizStep.Title, $event)" />
+                </div>
+            </div>
+            <h2 class="title showFullText" ng-class="{ 'txtSpchAlignColumn': readAloud}"
+                ng-style="{'color': wizard.GroupForeColor }"
+                ng-bind-html="wizStep.Title"></h2>
+            <div class="icon" ng-if="wizStep.Description !== null">
+                <a class="button button-icon {{::getIconValue('Help')}}"></a>
+            </div>
+        </div>
+        <div class="actionPlanStepCss"
+             ng-init="personApwStepAnswer = getPersonApwStepAnswer(wizStep.Id, null)" ng-if="wizStep.IsContentAssociation && wizStep.ColumnGuides.length === 0">
+            <div ng-class="{ 'has-errors' : formActionPlan.longText_{{::wizStep.Id}}.$invalid && {{::wizStep.IsRequired}} == true,
+                         'no-errors' : formActionPlan.longText_{{::wizStep.Id}}.$valid && {{::wizStep.IsRequired}} == true}">
+                <label class="item item-input formInput formInputLong item-input"
+                       ng-class="{'formRequired' : {{::wizStep.IsRequired}} == true, 'formNotRequired' :
+                  {{::wizStep.IsRequired}} == false}">
+                    <textarea sanitizescript ng-model="personApwStepAnswer.AnswerText" class="actionPlanTextarea"
+                              name="longText_{{::wizStep.Id}}"
+                              ng-auto-expand
+                              ng-required="{{::wizStep.IsRequired}}">
+                </textarea>
+                    <a class="button micQueComment button-icon icon ion-android-microphone placeholder-icon" ng-if="readAloud && androidVersion"
+                       on-touch="startListening(personApwStepAnswer, 'LongText')"></a>
+                </label>
+            </div>
+        </div>
+        <div class="list card" ng-if="wizStep.IsContentAssociation && wizStep.ColumnGuides.length !== 0">
+            <div ng-include="loadColumnGuideTemplate()">
+            </div>
+        </div>
+        <question-template templateUrl="templates/actionplan_templates/actionplanColumnTemplate.html"
+                           ng-repeat="wizColumn in wizStep.Columns">
+        </question-template>
+    </div>
+    <div ng-if="wizStep.IsMultiTaskColumnsPresent">
+        <div ng-include="loadMultiTaskTemplate()"></div>
+    </div>
+    <div ng-if="(currentStepIndex == apwLength - 1 && personActionPlanWizard.Attachments.length > 0)">
+        <div class="list card">
+            <div class="item cardColor" ng-style="{'background-color': akWizard.GroupBackColor, 'color': akWizard.GroupForeColor }">
+                <h2>{{::getResourceText('LIT_ATTACHMENTS')}}</h2>
+            </div>
+            <div class="item item-body imagePadding">
+                <div class="row imagePaddingBot" >
+                    <div class="ion-ios-plus-outline col-20 imageAdd"
+                         on-touch="selectFile()">
+                    </div>
+                    <h3 class="col-50 imageText" >{{::getResourceText('LIT_ADD_PHOTO')}}</h3>
+                </div>
+                <div ng-repeat="pAttachment in personActionPlanWizard.Attachments">
+                    <div class="col" ng-if="pAttachment.FileLocation != undefined">
+                        <div class="row removePadding listItem imageComments" ng-cloak>
+                            <div class="col col-20 listItem removePadding rightMargin">
+                                <img ng-src="{{getThumnail(pAttachment)}}"  
+                                     class="Thumbnail-left addImage darkImg"
+                                     ng-model="pAttachment.InternalFileLocation"
+                                     ng-if="showImageViewer(pAttachment)"
+                                     on-tap="showImage(pAttachment)" />
+                            </div>
+                            <div ng-if="showImageViewer(pAttachment)" class="col col-70">
+                                <textarea ng-model="pAttachment.FileHeader" sanitizescript
+                                          class="formInput formInputLong formNotRequired deleteMargin commentFontStyle"
+                                          name="imageComment" placeholder={{getResourceText('LIT_COMMENT')}}
+                                          ng-auto-expand>
+                            </textarea>
+                            </div>
+                            <div class="ion-ios-close-outline col col-10 closeImage"
+                                 ng-if="showImageViewer(pAttachment)"
+                                 on-tap="deleteAttachment(pAttachment)">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div ng-if="(currentStepIndex == apwLength - 1 && wizard.EnableEditGeoLocation && isEnableLocation)">
+        <div class="list card">
+            <div class="item cardColor"
+                ng-style="{'background-color': akWizard.GroupBackColor, 'color': akWizard.GroupForeColor }">
+                <h2>{{::getResourceText('LIT_MOBILE_GEOLOCATION_EDIT')}}</h2>
+            </div>
+            <div class="item item-body imagePadding">
+                <div class="row imagePaddingBot" ng-init="data = personActionPlanWizard">
+                    <div map-template class="mapAlignmnet" ng-model="data">
+                        <img ng-src="images/map.png" class="{{customClass}}" alt="map" on-tap="openMap()">
+                        <div ng-if="!isDisabled">
+                            <span ng-bind-html="personActionPlanWizard.Address" class="GeoLocationValue"></span>
+                        </div>
+                        <h3 ng-if="isDisabled" class="col-50 imageText">
+                            {{::getResourceText('LIT_MOBILE_PICK_LOCATION')}}</h3>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</ion-list>

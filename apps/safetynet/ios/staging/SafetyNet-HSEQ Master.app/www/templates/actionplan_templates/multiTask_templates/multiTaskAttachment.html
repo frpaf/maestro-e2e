@@ -1,0 +1,25 @@
+﻿<div class="actionPlanMultiTaskAttach">
+    <div class="row removePadding listItem imageComments"
+         ng-if="MultiTaskEntity.Attachments.length !== 0"
+         ng-repeat="mtAttach in MultiTaskEntity.Attachments">
+        <div class="col col-10 listItem removePadding rightMargin">
+            <img ng-src="images/gallery.png"
+                 class="imageFit darkImg"
+                 ng-model="mtAttach.FileLocation"
+                 ng-if="showImageViewer(mtAttach)"
+                 on-tap="showImage(mtAttach)"
+                 on-hold="deleteMultiTaskAttachment(mtAttach, MultiTaskEntity)" />
+        </div>
+        <div class="col col-90">
+            <textarea sanitizescript ng-model="mtAttach.FileHeader"
+                      class="formInput formInputLong formNotRequired deleteMargin"
+                      ng-if="showImageViewer(mtAttach)"
+                      name="imageComment"
+                      ng-auto-expand>
+            </textarea>
+        </div>
+    </div>
+    <div on-tap="createMultiTaskAttachment(MultiTaskEntity.Id)" ng-if="!showImageViewer(mtAttach)">
+        <img ng-src="images/imageAdd.png" class="darkImg" />
+    </div>
+</div>

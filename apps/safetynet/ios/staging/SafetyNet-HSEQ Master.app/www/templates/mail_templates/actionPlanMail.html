@@ -1,0 +1,49 @@
+﻿<div>
+    <p>
+        <cite>{{::getResourceText('LIT_DEAR')}} {{userDetail.UserName}},</cite>
+    </p>
+    <p>
+        {{::getResourceText('MSG_EMAIL_START_PHRASE')}} {{translatedModuleText}} <b>{{wizard.Name}}</b>
+    </p>
+    <br />
+    <br />
+    <h2><b><u><font ng-bind-html="wizard.Name" color="#151515" face="Times New Roman, Georgia, Serif"></font></u></b></h2>
+    <div>
+        <h3><b><font color="#3f3f3f" face="Times New Roman, Georgia, Serif">{{::getResourceText('LIT_TITLE')}} : {{personActionPlanWizard.Title}}</font></b></h3>
+    </div>
+    <div ng-repeat="wizStep in wizard.WizardSteps">
+        <div align="center">
+            <h3><b><u><font color="#151515" face="Times New Roman, Georgia, Serif" ng-bind-html="wizStep.Title"></font></u></b></h3>
+        </div>
+        <div ng-init="personApwStepAnswer = getPersonApwStepAnswer(wizStep.Id, null, personActionPlanWizard)">
+            <div ng-if="wizStep.ColumnGuides.length === 0">
+                <h4><font color="#656565" face="Times New Roman, Georgia, Serif">{{personApwStepAnswer.AnswerText}}</font></h4>
+            </div>
+            <div ng-if="wizStep.ColumnGuides.length !== 0" ng-repeat="guide in wizStep.ColumnGuides"
+                 ng-init="personGuide = getColumnGuideEntity(guide.Id, wizStep.Id, null, personActionPlanWizard)">
+                <div>
+                    <h4><b><font ng-bind-html="guide.Text" color="#151515" face="Times New Roman, Georgia, Serif"></font></b></h4>
+                </div>
+                <div>
+                    {{personGuide.AnswerText}}
+                </div>
+            </div>
+            <div ng-repeat="wizColumn in wizStep.Columns">
+                <div ng-init="personApwStepAnswerColumn = getPersonApwStepAnswer(wizStep.Id, wizColumn.Id, personActionPlanWizard)">
+                    <h4><b><u><font color="#151515" face="Times New Roman, Georgia, Serif" ng-bind-html="wizColumn.TranslatedText"> :</font></u></b></h4>
+                    <div ng-include="loadApwPreviewTemplate(wizColumn.ColumnType)">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <tt>{{::getResourceText('MSG_AUTO_GENERATE')}}</tt>
+</div>
+
+

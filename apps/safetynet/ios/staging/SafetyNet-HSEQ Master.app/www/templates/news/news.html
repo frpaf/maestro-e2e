@@ -1,0 +1,65 @@
+﻿<ion-view id="newsForApp" view-title="{{::getResourceText('LIT_MOBILE_NEWS')}}">
+  <ion-content overflow-scroll="true">
+    <ion-refresher
+      pulling-text="{{::getResourceText('LIT_PULL_TO_REFRESH')}}"
+      on-refresh="updateNews()"
+    >
+    </ion-refresher>
+    <div class="list newsList">
+      <input type="hidden" id="hdnNews" />
+      <div
+        ng-repeat="newsGroup in newsGroupList"
+        ng-init="newsList = getNewsListByGroupName(newsGroup.GroupName)"
+      >
+        <div
+          class="item newsToggle item-divider item-icon-left news"
+          ng-style="{ 'background-color': userDetail.Customer.ColourCode, 'color': '#FFFFFF' }"
+          on-tap="toggleGroup(newsGroup)"
+        >
+          <i
+            class="iconFont"
+            ng-class="isGroupShown(newsGroup) ? getIconValue('ArrorDropDown') : getIconValue('ArrorDropRight')"
+            style="float: right"
+          ></i>
+          {{newsGroup.GroupName}}
+        </div>
+        <div
+          ng-if="isGroupShown(newsGroup)"
+          class="card newsCard newsCardList item color"
+          ng-repeat="news in newsList"
+          ng-style="{'border-color': (news.IsRead) ? '#d2d7dc' : userDetail.Customer.ColourCode }"
+        >
+          <div
+            class="item newsCardList"
+            ng-class="{'item-icon-right': news.Files.length != 0}"
+          ><i ng-show="showNotificationIcon(news)" class="ion-android-notifications" 
+                style='color:#34a1eb;float:right;font-size:20px;position:absolute;right:0px'></i>
+            <div>
+              <a class="removeTextDecoration" on-tap="openHtmlDocument(news)">
+                {{news.Header}}
+                <p>{{news.Teaser}}</p>
+              </a>
+            </div>
+            <div
+              class="icon alignVertical"
+              ng-if="news.Files.length != 0"
+              on-tap="showFileList(news)"
+            >
+              <a
+                class="button ion-android-attach button-clear attachIconColor"
+              ></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        ng-cloak
+        class="item item-icon-left"
+        ng-if="newsGroupList.length === 0"
+      >
+        <i class="icon {{::getIconValue('NoData')}}"></i>
+        <p>{{::getResourceText('MSG_MOBILE_DOWNLOAD_NEWS')}}</p>
+      </div>
+    </div>
+  </ion-content>
+</ion-view>

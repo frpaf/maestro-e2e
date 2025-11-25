@@ -1,0 +1,170 @@
+name: SafetyNet iOS Staging
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'tests/safetynet/ios/staging/**'
+      - 'apps/safetynet/ios/staging/**'
+      - '.github/workflows/safetynet-ios-staging.yml'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'tests/safetynet/ios/staging/**'
+      - 'apps/safetynet/ios/staging/**'
+  workflow_dispatch:
+    inputs:
+      app_version:
+        description: 'App version to download and test (e.g., latest, v2.1.0)'
+        required: false
+        default: 'use-existing'
+
+jobs:
+  test-staging:
+    runs-on: macos-14
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Set up Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: '15.4'
+
+      - name: Install and Verify Maestro
+        run: |
+          curl -Ls "https://get.maestro.mobile.dev" | bash
+          export PATH="$HOME/.maestro/bin:$PATH"
+          maestro --version
+          echo "$HOME/.maestro/bin" >> $GITHUB_PATH
+
+      - name: Download Staging App (if requested)
+        if: github.event.inputs.app_version != 'use-existing'
+        run: |
+          chmod +x scripts/download-app.sh
+          ./scripts/download-app.sh safetynet ios staging ${{ github.event.inputs.app_version || 'latest' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Verify iOS app and test files exist
+        run: |
+          echo "=== Checking for iOS app bundle ==="
+          APP_DIR=$(find apps/safetynet/ios/staging -name "*.app" -type d | head -1)
+          if [ -z "$APP_DIR" ]; then
+            echo "ERROR: No .app bundle found in apps/safetynet/ios/staging/"
+            ls -la apps/safetynet/ios/staging/
+            exit 1
+          fi
+          echo "iOS app found: $APP_DIR"
+          ls -lh "$APP_DIR"
+
+          echo "=== Checking for Maestro test files ==="
+          if [ -d "tests/safetynet/ios/staging/" ]; then
+            ls -la tests/safetynet/ios/staging/
+            find tests/safetynet/ios/staging/ -name "*.yaml" -o -name "*.yml" || echo "No YAML test files found!"
+          else
+            echo "ERROR: Test directory not found!"
+            exit 1
+          fi
+
+      - name: List available iOS simulators
+        run: |
+          echo "=== Available iOS Simulators ==="
+          xcrun simctl list devices available
+
+      - name: Start iOS Simulator
+        run: |
+          set -e
+
+          echo "=== Creating iPhone 15 Pro simulator if needed ==="
+          DEVICE_ID=$(xcrun simctl create "iPhone-15-Pro-Test" "iPhone 15 Pro" "iOS17.5" 2>/dev/null || xcrun simctl list devices | grep "iPhone 15 Pro" | grep -v unavailable | head -1 | grep -oE '\([A-F0-9-]+\)' | tr -d '()')
+
+          if [ -z "$DEVICE_ID" ]; then
+            echo "Finding existing iPhone 15 Pro simulator..."
+            DEVICE_ID=$(xcrun simctl list devices | grep "iPhone 15 Pro" | grep -v unavailable | head -1 | grep -oE '\([A-F0-9-]+\)' | tr -d '()')
+          fi
+
+          if [ -z "$DEVICE_ID" ]; then
+            echo "ERROR: Could not create or find iPhone 15 Pro simulator"
+            exit 1
+          fi
+
+          echo "Using simulator: $DEVICE_ID"
+          echo "SIMULATOR_ID=$DEVICE_ID" >> $GITHUB_ENV
+
+          echo "=== Booting simulator ==="
+          xcrun simctl boot "$DEVICE_ID" || echo "Simulator already booted"
+
+          echo "=== Waiting for simulator to be ready ==="
+          for i in {1..60}; do
+            if xcrun simctl bootstatus "$DEVICE_ID" 2>&1 | grep -q "Device already booted"; then
+              echo "Simulator is ready!"
+              break
+            fi
+            echo "Waiting for simulator boot... ($i/60)"
+            sleep 2
+          done
+
+          echo "=== Simulator status ==="
+          xcrun simctl list devices | grep "$DEVICE_ID"
+
+      - name: Install iOS app on simulator
+        run: |
+          set -e
+          APP_DIR=$(find apps/safetynet/ios/staging -name "*.app" -type d | head -1)
+          echo "=== Installing iOS app on simulator: $APP_DIR ==="
+          xcrun simctl install "$SIMULATOR_ID" "$APP_DIR"
+
+          echo "=== Verifying app installation ==="
+          xcrun simctl listapps "$SIMULATOR_ID" | grep -i safetynet || echo "Note: App installed but not found in list (may be normal)"
+
+      - name: Run Maestro Tests
+        run: |
+          set -e
+          export PATH="$HOME/.maestro/bin:$PATH"
+
+          echo "=== Checking Maestro ==="
+          which maestro
+          maestro --version
+
+          echo "=== Checking test files ==="
+          ls -la tests/safetynet/ios/staging/
+
+          echo "=== Running Maestro tests ==="
+          maestro test tests/safetynet/ios/staging/ --format junit --output maestro-report.xml
+
+          echo "=== Tests completed ==="
+
+      - name: Shutdown simulator
+        if: always()
+        run: |
+          if [ ! -z "$SIMULATOR_ID" ]; then
+            echo "=== Shutting down simulator ==="
+            xcrun simctl shutdown "$SIMULATOR_ID" || echo "Simulator already shut down"
+          fi
+
+      - name: Upload Maestro Test Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: safetynet-ios-staging-test-results
+          path: |
+            maestro-report.xml
+            ~/.maestro/tests/**/*
+            **/*.mp4
+          retention-days: 7
+          if-no-files-found: warn
+
+      - name: Upload Maestro Logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: safetynet-ios-staging-logs
+          path: |
+            ~/.maestro/logs/**/*
+          retention-days: 7
+          if-no-files-found: warn

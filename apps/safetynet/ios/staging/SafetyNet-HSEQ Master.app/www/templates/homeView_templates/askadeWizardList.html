@@ -1,0 +1,10 @@
+﻿<a class="item" ng-repeat="que in checkModule(userApp)" ng-if="checkModule(userApp).length !== 0"
+   on-tap="navigateToAnswering(userApp, que)" on-hold="selectFavoritesOnHold(que, userApp)">
+    <div class="row removePadding listItem">
+        <div class="col-10 listImage" ng-bind-html="que.ImageFileBase64" ng-if="que.ImageFileBase64 != null"></div>
+        <div ng-class="{ 'col col-90' : que.ImageFileBase64 !== null, 'col' : que.ImageFileBase64 === null }">
+            <h2 class="showFullText">{{::que.Name}}</h2>
+            <p ng-bind-html="que.Description"></p>
+        </div>
+    </div>
+</a>

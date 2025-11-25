@@ -1,0 +1,15 @@
+﻿<div ng-class="{ 'has-errors' : formQuestionnaire.cb_{{::qg.Id}}_{{::q.Id}}.$invalid && {{::q.IsRequired}} == true, 'no-errors' :
+              formQuestionnaire.cb_{{::qg.Id}}_{{::q.Id}}.$valid && {{::q.IsRequired}} == true}">
+    <ion-checkbox ng-repeat="ao in q.AnswerOptions" class="answerOption_{{::ao.Id}} alignSmileyWithAO showCompleteAnswerOptionCheckBox"
+                  id="cb_{{::qg.Id}}_{{::q.Id}}_{{::ao.Id}}"
+                  name="cb_{{::qg.Id}}_{{::q.Id}}" 
+                  ng-change="window.focus();setAnswerOptionSelected(ao.Id, checkStatus, q)"
+                  ng-required="!getRequiredForCheckboxList(qg.Id, q.Id,q.IsRequired, q.IsDependencyMet)"
+                  on-tap="checkCommentRequiredCheckBox(ao, pqaView, checkStatus)"
+                  ng-init='checkStatus=getDefaultStatus(q.Id,ao.Id)' 
+                  ng-model="checkStatus"
+                  ng-style="{ 'color': getColor(questionnaire,q.Id,ao,questionnaire.AnswerOptionFontColour,'checkbox', checkStatus), 'background-color': getBackColor(questionnaire,q.Id,ao,'checkbox', checkStatus) }">
+        {{::ao.Text}}<div ng-if="ao.ImageFile !== null" ng-bind-html="ao.ImageFile"></div>
+    </ion-checkbox>
+</div>
+<span ui-view></span>

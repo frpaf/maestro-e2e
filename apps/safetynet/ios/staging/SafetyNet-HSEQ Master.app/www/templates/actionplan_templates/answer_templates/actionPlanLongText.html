@@ -1,0 +1,15 @@
+<div class="actionPlanMargin" ng-class="{ 'has-errors' : formActionPlan.longText_{{::wizStep.Id}}_{{::guide.Id}}.$invalid
+       && {{::wizStep.IsRequired}} == true, 'no-errors' :
+       formActionPlan.longText_{{::wizStep.Id}}_{{::guide.Id}}.$valid
+       && {{::wizStep.IsRequired}} == true}">
+    <label class="item item-input formInputLongText formInputLong item-input"
+           ng-class="{'formRequired' : {{::wizStep.IsRequired}} == true, 'formNotRequired' : {{::wizStep.IsRequired}} == false}">
+        <textarea ng-model="personGuide.AnswerText" sanitizescript
+                  name="longText_{{::wizStep.Id}}_{{::guide.Id}}"
+                  ng-auto-expand ng-model-options="{allowInvalid: true}"
+                  ng-required="checkRequired(wizStep)">
+        </textarea>
+        <a class="button micQueComment button-icon icon ion-android-microphone placeholder-icon" ng-if="readAloud && androidVersion"
+           on-touch="startListening(personGuide, 'LongText')"></a>
+    </label>
+</div>

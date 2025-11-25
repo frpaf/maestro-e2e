@@ -1,0 +1,53 @@
+﻿<ion-content class="has-subheader" ng-class="{ 'has-footer' :  selectedCount !== 0}">
+    <ion-list can-swipe="true" ng-repeat="akw in akwList">
+        <label class="item item-divider">
+            {{::akw.Name}}
+        </label>
+        <ion-item ng-repeat="answer in akw.Answers"
+                  ng-init="isSelected = false"
+                  ng-class="{ active: isSelected }"
+                  class="item item-text-wrap">
+            <div on-hold="onMultiSelectForUpload(answer.PersonAskadeAnswer, this)"
+                 on-tap="onSelectForUpload(answer.PersonAskadeAnswer, this)">
+                <h2>{{::answer.TimeStamp}}</h2>
+            </div>
+            <div>
+                <a class="button uploadFail button-icon icon {{::getIconValue('DeleteAnswer')}}"
+                   on-touch="deletePersonAkByPAkId(answer.PersonAskadeAnswer)"
+                   ng-disabled="answer.PersonAskadeAnswer.UploadInProgress || isSelected">
+                </a>
+                <a class="button button-icon icon iconColor {{::getIconValue('InprogressOutline')}}"
+                   on-touch="editCompletedAnswer(answer.PersonAskadeAnswer)"
+                   ng-disabled="answer.PersonAskadeAnswer.UploadInProgress || isSelected">
+                </a>
+                <a class="button button-icon icon iconColor {{::getIconValue('CompletedOutline')}}"
+                   ng-if="!(customerSetting.IsDemoCustomer || userDetailsData.IsDemoUser)"
+                   on-touch="uploadAskadeAnswering(answer.PersonAskadeAnswer.Id)"
+                   ng-disabled="answer.PersonAskadeAnswer.UploadInProgress || isSelected"
+                   ng-class="{ 'uploadInProgress': answer.PersonAskadeAnswer.UploadInProgress,
+                                'uploadFail': answer.PersonAskadeAnswer.UploadFail}">
+                </a>
+                <a ng-if="answer.PersonAskadeAnswer.AskadeFileTypeWizard.EnableEmail" class="button button-icon icon {{::getIconValue('Email')}} subdued"
+                   pdf-template is-pdf-email="{{true}}"
+                   on-touch="genPdf(answer.PersonAskadeAnswer, 'Askade')"
+                   ng-disabled="answer.PersonAskadeAnswer.UploadInProgress  || isSelected">
+                    <div id="askadePdf_{{answer.PersonAskadeAnswer.Id}}" class="pdfHideCss" ng-include="askadePdf"></div>
+                </a>
+                <a  pdf-template is-pdf-email="{{false}}">
+                   <img ng-src="{{answer.PersonAskadeAnswer.UploadInProgress || isSelected === true ? 'images/pdffaded.png' : 'images/pdf.png' }}" 
+                        ng-if="answer.PersonAskadeAnswer.AskadeFileTypeWizard.EnablePrint" class="pdfImage subdued"
+                   on-touch="answer.PersonAskadeAnswer.UploadInProgress || isSelected || genPdf(answer.PersonAskadeAnswer, 'Askade')"
+                   ng-disabled="answer.PersonAskadeAnswer.UploadInProgress || isSelected" />
+                    <div id="askadePdf_{{answer.PersonAskadeAnswer.Id}}" class="pdfHideCss" ng-include="askadePdf"></div>
+                </a>
+            </div>
+        </ion-item>
+    </ion-list>
+</ion-content>
+<ion-footer-bar align-title="left" class="bar-stable item-icon-right" ng-if="selectedCount !== 0 && !customerSetting.IsDemoCustomer">
+    <h1 class="title">{{selectedCount}}</h1>
+    <div class="icon">
+        <a class="button button-icon {{::getIconValue('Completed')}}"
+           on-touch="uploadMutipleWizards()"></a>
+    </div>
+</ion-footer-bar>

@@ -1,7 +1,0 @@
-﻿<div class="actionPlanMargin" ng-class="{ 'has-errors' : formActionPlan.numText_{{::wizStep.Id}}_{{::wizColumn.Id}}.$invalid && {{::wizColumn.IsRequired}} == true,
-                         'no-errors' : formActionPlan.numText_{{::wizStep.Id}}_{{::wizColumn.Id}}.$valid && {{::wizColumn.IsRequired}} == true }">
-    <input sanitizenumber type="tel" maxlength="14" name="numText_{{::wizStep.Id}}_{{::wizColumn.Id}}" class="formInput formInputShort"
-           ng-class="{'formRequired' : {{::wizColumn.IsRequired}} == true, 'formNotRequired' : {{::wizColumn.IsRequired}} == false }"
-           ng-model="getPersonApwStepAnswer(wizStep.Id, wizColumn.Id).AnswerText" ng-required="{{::wizColumn.IsRequired}}"
-            />
-</div>

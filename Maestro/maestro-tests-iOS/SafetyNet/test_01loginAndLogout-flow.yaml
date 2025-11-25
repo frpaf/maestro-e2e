@@ -1,9 +1,0 @@
-appId: com.frontavenue.hseqmaster.safetynet
-tags:
-  - android
-  - passing
----
-- clearState
-- launchApp
-
-- runFlow: "subflow/login.yaml"

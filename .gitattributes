@@ -1,0 +1,11 @@
+# Git LFS Configuration for Maestro E2E Repository
+# Track Android APK files
+*.apk filter=lfs diff=lfs merge=lfs -text
+# Track iOS app bundles (all files within .app directories)
+*.app/** filter=lfs diff=lfs merge=lfs -text
+# Track other binary formats that might be added
+*.ipa filter=lfs diff=lfs merge=lfs -text
+*.aab filter=lfs diff=lfs merge=lfs -text
+# Track video recordings from test runs
+*.mp4 filter=lfs diff=lfs merge=lfs -text
+*.mov filter=lfs diff=lfs merge=lfs -text

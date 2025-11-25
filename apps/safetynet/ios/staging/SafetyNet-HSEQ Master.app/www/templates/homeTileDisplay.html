@@ -1,0 +1,79 @@
+﻿<ion-content on-scroll="myFunction($event)" overflow-scroll="true">
+    <ion-refresher pulling-text="{{::getResourceText('LIT_PULL_TO_REFRESH')}}"
+                   on-refresh="updateDefinations()">
+    </ion-refresher>
+    <div class="homeEmptyCenterAlign" ng-if="allModList.length === 0">
+        <lottie-player src="raw/emptySearch.json" background="transparent" speed="1" class="emptyIcons" loop autoplay>
+        </lottie-player>
+        <h3>{{getResourceText('MSG_MOBILE_DOWNLOAD_MODULE_LINE1')}}</h3>
+        <h3>{{getResourceText('MSG_MOBILE_DOWNLOAD_MODULE_LINE2')}}</h3>
+    </div>
+    <div class="list list-inset" ng-if="showSurvey()">
+        <div class="item item-divider row"
+             ng-style="{ 'background-color' : '{{::headerColor}}', 'color': '#FFFFFF' }" ng-cloak>
+            <div class="col col-90" ng-cloak>
+                <div class="item-icon-left"
+                     ng-style="{ 'background-color' : '{{::userApp.ColourCode}}', 'color': '#FFFFFF' }">
+                    {{getResourceText('LIT_MOBILE_SURVEY_HEADER')}}
+                </div>
+            </div>
+        </div>
+        <div ng-include="loadListTemplate('Survey')" ng-cloak></div>
+    </div>
+    <div class="paddingNewGridHome">
+        <div ng-init="tileDisplayVal = getTileDisplayVal()">
+            <div class="homeTileRow" ng-repeat="listData in allModList" ng-if="$index % tileDisplayVal === 0">
+                <div class="newSingleGrid item" ng-if="$index < allModList.length && tileDisplayVal >= 2"
+                     on-tap="navigateToAnswering(allModList[$index].UserApp, allModList[$index])" on-hold="selectFavoritesOnHold(allModList[$index])"
+                     ng-class="{ 'col col-33' : tileDisplayVal === 3, 'col col-50': tileDisplayVal === 2 }"
+                     ng-init="isDocLib = allModList[$index].UserApp.Text === 'DocumentLibrary'">
+                    <div class="gridContent">
+                        <i class="icon {{allModList[$index].UserApp.IconClass}} homeIconSize"
+                           ng-if="allModList[$index].ImageVal === null"></i>
+                        <div class="homeIconSize"
+                             ng-bind-html="allModList[$index].ImageVal" ng-if="allModList[$index].ImageVal != null"></div>
+                        <div ng-if="!isDocLib">
+                            <h2 class="gridShowFullText tileViewTextFontSize">{{allModList[$index].Name}}</h2>
+                        </div>
+                        <div ng-if="isDocLib">
+                            <h2 class="gridShowFullText tileViewTextFontSize">{{allModList[$index].GroupName}}</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="newSingleGrid item" ng-if="$index + 1 < allModList.length && tileDisplayVal >= 2"
+                     on-tap="navigateToAnswering(allModList[$index + 1].UserApp, allModList[$index + 1])" on-hold="selectFavoritesOnHold(allModList[$index + 1])"
+                     ng-class="{ 'col col-33' : tileDisplayVal === 3, 'col col-50': tileDisplayVal === 2 }"
+                     ng-init="isDocLib = allModList[$index + 1].UserApp.Text === 'DocumentLibrary'">
+                    <div class="gridContent">
+                        <i class="icon {{allModList[$index + 1].UserApp.IconClass}} homeIconSize"
+                           ng-if="allModList[$index + 1].ImageVal === null"></i>
+                        <div class="homeIconSize"
+                             ng-bind-html="allModList[$index + 1].ImageVal" ng-if="allModList[$index + 1].ImageVal != null"></div>
+                        <div ng-if="!isDocLib">
+                            <h2 class="gridShowFullText tileViewTextFontSize">{{allModList[$index + 1].Name}}</h2>
+                        </div>
+                        <div ng-if="isDocLib">
+                            <h2 class="gridShowFullText tileViewTextFontSize">{{allModList[$index + 1].GroupName}}</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col col-33 newSingleGrid item" ng-if="$index + 2 < allModList.length && tileDisplayVal === 3"
+                     on-tap="navigateToAnswering(allModList[$index + 2].UserApp, allModList[$index + 2])" on-hold="selectFavoritesOnHold(allModList[$index + 2])"
+                     ng-init="isDocLib = allModList[$index + 2].UserApp.Text === 'DocumentLibrary'">
+                    <div class="gridContent">
+                        <i class="icon {{allModList[$index + 2].UserApp.IconClass}} homeIconSize"
+                           ng-if="allModList[$index + 2].ImageVal === null"></i>
+                        <div class="homeIconSize"
+                             ng-bind-html="allModList[$index + 2].ImageVal" ng-if="allModList[$index + 2].ImageVal != null"></div>
+                        <div ng-if="!isDocLib">
+                            <h2 class="gridShowFullText tileViewTextFontSize">{{allModList[$index + 2].Name}}</h2>
+                        </div>
+                        <div ng-if="isDocLib">
+                            <h2 class="gridShowFullText tileViewTextFontSize">{{allModList[$index + 2].GroupName}}</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</ion-content>

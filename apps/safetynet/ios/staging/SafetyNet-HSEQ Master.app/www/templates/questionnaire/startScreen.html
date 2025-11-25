@@ -1,0 +1,84 @@
+﻿<ion-view view-title="{{::title}}">
+    <div class="subHeaderColor bar bar-subheader">
+        <h2 class="title"
+            on-touch="showGroupDescription(questionnaire.Name, null)">
+        {{::questionnaire.Name}}</h2>
+    </div>
+    <ion-content class="padding has-subheader">
+        <div class="item item-divider" align-title="left" ng-if="pq.IsAnonymous">
+            <h2 class="title showFullText anonymousText">{{::getResourceText('LIT_ANONYMOUS')}}</h2>
+        </div>
+        <div class="card darkCard" ng-if="questionnaire.Description">
+            <div class="item item-divider">
+                <div class="buttons displayInlineBlock verticalTopAlign" ng-if="readAloud">
+                    <div class="icon displayInlineBlock helpLinkIcon">
+                        <img ng-src="images/speaker.png" class="darkImg" on-tap="ttsConvert(questionnaire.Description)" />
+                    </div>
+                </div>
+                {{::getResourceText('LIT_DESCRIPTION')}}
+            </div>
+            <div class="item item-text-wrap">
+                {{::questionnaire.Description}}
+            </div>
+        </div>
+        <div handlelink class="card darkCard" ng-if="questionnaire.ExtendedDescription" ng-init="extendedDesc = getExtendedHtml(questionnaire.ExtendedDescription)">
+            <div class="item item-divider">
+                <div class="buttons displayInlineBlock verticalTopAlign" ng-if="readAloud">
+                    <div class="icon displayInlineBlock helpLinkIcon">
+                        <img ng-src="images/speaker.png" class="darkImg" on-tap="ttsConvert(extendedDesc)" />
+                    </div>
+                </div>
+                {{::getResourceText('LIT_EXTENDED_DESCRIPTION')}}
+            </div>
+            <span class="item item-text-wrap" ng-bind-html="extendedDesc">
+            </span>
+        </div>
+        <div class="card darkCard" ng-if="getDropDownVisibility()">
+            <label class="item item-input item-stacked-label">
+                <span class="input-label" ng-bind-html="questionnaire.TranslatedPointOfView == null ? questionnaire.PointOfView : questionnaire.TranslatedPointOfView"></span>
+                <pop-up title="{{questionnaire.TranslatedPointOfView == null ? questionnaire.PointOfView : questionnaire.TranslatedPointOfView}}"
+                        display-text="{{checkDropDownText()}}"
+                        class="item button button-block icon-right {{::getIconValue('DropDown')}} startScreenButton"
+                        ng-model="evaluateId"
+                        style="border:2px solid #EAEAEA;">
+                    <lazy-dropdown ng-model="evaluateId"
+                                   ng-init="columnType = questionnaire.PointOfView; dropDownTypeVal = null; typeVal = questionnaire.ModuleName(); isOnline = isEvaluatingForEmpty(questionnaire.PointOfView); columnSubType = questionnaire.ColumnSubType; defaultVal = true; textField = questionnaire.PointOfView === 'Department' ? 'DisplayText' : 'Text'; QRCodeReader = true;"
+                                   display-text="{{deptName}}"
+                                   datasource="evaluatingList"
+                                   text-field="textField"
+                                   value-field="Id"
+                                   selected-display-text="Text"
+                                   columntype="columnType"
+                                   dropdowntype="dropDownTypeVal"
+                                   enableonline="isOnline"
+                                   type="typeVal"
+                                   on-item-selected="setListEntity"
+                                   dropdown-default-value="defaultVal"
+                                   column-sub-type="columnSubType" qr-code-reader-enabled="QRCodeReader">
+                    </lazy-dropdown>
+                </pop-up>
+            </label>
+        </div>
+        <div class="card darkCard" ng-if="(questionnaire.EnableEditGeoLocation && isEnableLocation)">
+            <label class="item item-input item-stacked-label">
+                <span class="input-label">{{::getResourceText('LIT_MOBILE_GEOLOCATION_EDIT')}}</span>
+                <div class="startScreenButton" ng-init="data = pq;">
+                    <div map-template class="mapAlignmnet" ng-model="data">
+                        <img ng-src="images/map.png" class="{{customClass}}" alt="map" on-tap="openMap()">
+                        <div ng-if="!isDisabled">
+                            <span ng-bind-html="pq.Address" class="GeoLocationValue"></span>
+                        </div>
+                        <h3 ng-if="isDisabled" class="col-50 imageText">
+                            {{::getResourceText('LIT_MOBILE_PICK_LOCATION')}}</h3>
+                    </div>
+                </div>
+            </label>
+        </div>
+        <button class="button button-block buttonColor"
+                on-touch="onStartAnswering()"
+                ng-disabled="!(evaluateId != null && evaluateId.length > 0)">
+            {{::getResourceText('LIT_START')}}
+        </button>
+        <br/>
+    </ion-content>
+</ion-view>

@@ -1,0 +1,20 @@
+<pop-up title="{{q.Text}}"
+        ng-init="dispText = getQuestionnaireDropDownText(q.ColumnType, q.DataTypeId, pqaView.AnswerId, modName)"
+        display-text="{{dispText}}"
+        class="item questionnaireMargin button button-block icon-right {{::getIconValue('DropDown')}} alignSelectTag"
+        ng-model="pqaView.AnswerText"
+        assign-id-text="true"
+        name="dropDownQue_{{::qg.Id}}_{{::q.Id}}"
+        style="border:2px solid #EAEAEA;"
+        ng-class="{ 'has-errors' : formQuestionnaire.dropDownQue_{{::qg.Id}}_{{::q.Id}}.$invalid && {{::q.IsRequired}} === true, 
+                    'no-errors' : formQuestionnaire.dropDownQue_{{::qg.Id}}_{{::q.Id}}.$valid && {{::q.IsRequired}} === true }"
+        ng-required="{{::q.IsRequired}}">
+    <lazy-dropdown ng-init="columnsListSource = getDropDownSourceByText(q.ColumnType, q.DataTypeId, q.ColumnSubType); columnType = q.ColumnType; dropDownTypeVal = q.DataTypeId; isOnline = isOnlineDropDownEnable(q.ColumnType, q.DataTypeId); typeVal = questionnaire.ModuleName(); columnSubType = q.ColumnSubType === pqaView.ColumnSubType ? q.ColumnSubType : pqaView.ColumnSubType; defaultVal = pqaView.DefaultValue; textField = q.ColumnType === 'Department' ? 'DisplayText' : 'Text'; QRCodeReader = q.EnableQRCodeReader;"
+                   datasource="columnsListSource" text-field="textField" value-field="Id" selected-display-text="Text"
+                   type="typeVal"
+                   dropdowntype="dropDownTypeVal" columntype="columnType" enableonline="isOnline"
+                   ng-model="pqaView.AnswerId"
+                   dropdown-default-value="defaultVal"
+                   column-sub-type="columnSubType" qr-code-reader-enabled="QRCodeReader">
+    </lazy-dropdown>
+</pop-up>

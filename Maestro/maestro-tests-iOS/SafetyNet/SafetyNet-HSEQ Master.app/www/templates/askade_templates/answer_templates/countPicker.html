@@ -1,6 +1,0 @@
-<countpicker ng-model="personAkStepColumnAnswer.AnswerText" name="cp_{{::akStep.Id}}_{{::akColumn.FileColumnId}}"
-  style="border: 2px solid #eaeaea; display: block;" step="1" minvalue="0" namevalue="cp_{{::akStep.Id}}_{{::akColumn.FileColumnId}}"
-  ng-class="{ 'has-errors' : formAskade.cp_{{::akStep.Id}}_{{::akColumn.FileColumnId}}.$invalid && {{::akColumn.IsMandatory}} === true,
-                 'no-errors' : formAskade.cp_{{::akStep.Id}}_{{::akColumn.FileColumnId}}.$valid && {{::akColumn.IsMandatory}} === true }"
-  ng-required="{{::akColumn.IsMandatory}}">
-</countpicker>

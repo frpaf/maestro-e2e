@@ -1,0 +1,9 @@
+﻿<div class="item item-input-inset alignCenterTimePicker">
+    <label class="item item-input editTimeHourLabel">
+        <input type="tel" id="hourVal" class="editTimeHour" placeholder="HH" ng-model="data.hour" value="{{data.hour}}" ng-change="validateTime(data)">
+    </label>
+    <div class="marginColon">:</div>
+    <label class="item item-input editTimeMinuteLabel">
+        <input type="tel" id="minuteVal" class="editTimeMinute" placeholder="MM" ng-model="data.minute" value="{{data.minute}}" ng-change="validateTime(data)">
+    </label>
+</div>

@@ -1,9 +1,0 @@
-﻿<label name="timePickerAk_{{::akStep.Id}}_{{::akColumn.FileColumnId}}"
-       class="button buttonValue button-block button-outline fontButtonIcon icon-left {{::getIconValue('Timer')}}"
-       ng-class="{ 'has-errors' : formAskade.timePickerAk_{{::akStep.Id}}_{{::akColumn.FileColumnId}}.$invalid && {{::akColumn.IsMandatory}} == true,
-                         'no-errors' : formAskade.timePickerAk_{{::akStep.Id}}_{{::akColumn.FileColumnId}}.$valid && {{::akColumn.IsMandatory}} == true }"
-       ng-required="{{::akColumn.IsMandatory}}"
-       ng-model="personAkStepColumnAnswer.AnswerText"
-       on-tap="openTimePicker(akColumn.FileColumnId, akColumn.Text)">
-    {{ personAkStepColumnAnswer.AnswerText }}
-</label>
