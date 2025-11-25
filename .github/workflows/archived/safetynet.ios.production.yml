@@ -4,10 +4,6 @@ on:
   # Only manual trigger for production
   workflow_dispatch:
     inputs:
-      app_version:
-        description: 'App version to download and test (e.g., latest, v2.1.0)'
-        required: true
-        default: 'latest'
       confirmation:
         description: 'Type "PRODUCTION" to confirm running tests on production'
         required: true
@@ -37,12 +33,6 @@ jobs:
           maestro --version
           echo "$HOME/.maestro/bin" >> $GITHUB_PATH
 
-      - name: Download Production App
-        run: |
-          chmod +x scripts/download-app.sh
-          ./scripts/download-app.sh safetynet ios production ${{ github.event.inputs.app_version }}
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Verify iOS app and test files exist
         run: |

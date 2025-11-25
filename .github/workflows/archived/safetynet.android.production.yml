@@ -4,10 +4,6 @@ on:
   # Only manual trigger for production
   workflow_dispatch:
     inputs:
-      app_version:
-        description: 'App version to download and test (e.g., latest, v2.1.0)'
-        required: true
-        default: 'latest'
       confirmation:
         description: 'Type "PRODUCTION" to confirm running tests on production'
         required: true
@@ -67,25 +63,6 @@ jobs:
           export PATH="$HOME/.maestro/bin:$PATH"
           maestro --version
           echo "$HOME/.maestro/bin" >> $GITHUB_PATH
-
-      - name: Download Production APK
-        run: |
-          # Install gh CLI if not available
-          if ! command -v gh &> /dev/null; then
-            echo "Installing GitHub CLI..."
-            type -p curl >/dev/null || sudo apt install curl -y
-            curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
-            sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg
-            echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
-            sudo apt update
-            sudo apt install gh -y
-          fi
-
-          # Run download script
-          chmod +x scripts/download-app.sh
-          ./scripts/download-app.sh safetynet android production ${{ github.event.inputs.app_version }}
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Verify APK and test files exist
         run: |

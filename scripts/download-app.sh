@@ -47,30 +47,36 @@ if [ "$ENVIRONMENT" != "staging" ] && [ "$ENVIRONMENT" != "production" ]; then
     exit 1
 fi
 
-# Configuration - UPDATE THESE WITH YOUR ACTUAL REPO NAMES
-# Format: yourorg/project-app-repo
-APP_REPO_MAP=(
-    "safetynet:yourorg/safetynet-app"
-    "project2:yourorg/project2-app"
-    # Add more projects here as needed
-)
+# Load project configuration from JSON file
+CONFIG_FILE="config/projects.json"
 
-# Find app repo for project
-APP_REPO=""
-for mapping in "${APP_REPO_MAP[@]}"; do
-    key="${mapping%%:*}"
-    value="${mapping##*:}"
-    if [ "$key" == "$PROJECT" ]; then
-        APP_REPO="$value"
-        break
-    fi
-done
-
-if [ -z "$APP_REPO" ]; then
-    echo -e "${RED}Error: No repository mapping found for project '$PROJECT'${NC}"
-    echo "Please update the APP_REPO_MAP in this script with your repository information."
+if [ ! -f "$CONFIG_FILE" ]; then
+    echo -e "${RED}Error: Configuration file not found: $CONFIG_FILE${NC}"
+    echo "Please create config/projects.json with project repository mappings."
     exit 1
 fi
+
+# Check if jq is installed
+if ! command -v jq &> /dev/null; then
+    echo -e "${RED}Error: jq is not installed${NC}"
+    echo "Install it with: brew install jq"
+    exit 1
+fi
+
+# Get app repository from config
+APP_REPO=$(jq -r ".projects.\"$PROJECT\".appRepo // empty" "$CONFIG_FILE")
+
+if [ -z "$APP_REPO" ] || [ "$APP_REPO" == "null" ]; then
+    echo -e "${RED}Error: No repository found for project '$PROJECT' in $CONFIG_FILE${NC}"
+    echo ""
+    echo "Available projects:"
+    jq -r '.projects | keys[]' "$CONFIG_FILE"
+    exit 1
+fi
+
+echo -e "${GREEN}Found configuration for $PROJECT${NC}"
+DISPLAY_NAME=$(jq -r ".projects.\"$PROJECT\".displayName // \"$PROJECT\"" "$CONFIG_FILE")
+echo "Display name: $DISPLAY_NAME"
 
 # Set file pattern based on platform and environment
 if [ "$PLATFORM" == "android" ]; then

@@ -13,11 +13,6 @@ on:
       - 'tests/safetynet/ios/staging/**'
       - 'apps/safetynet/ios/staging/**'
   workflow_dispatch:
-    inputs:
-      app_version:
-        description: 'App version to download and test (e.g., latest, v2.1.0)'
-        required: false
-        default: 'use-existing'
 
 jobs:
   test-staging:
@@ -41,14 +36,6 @@ jobs:
           export PATH="$HOME/.maestro/bin:$PATH"
           maestro --version
           echo "$HOME/.maestro/bin" >> $GITHUB_PATH
-
-      - name: Download Staging App (if requested)
-        if: github.event.inputs.app_version != 'use-existing'
-        run: |
-          chmod +x scripts/download-app.sh
-          ./scripts/download-app.sh safetynet ios staging ${{ github.event.inputs.app_version || 'latest' }}
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Verify iOS app and test files exist
         run: |

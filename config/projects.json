@@ -1,0 +1,42 @@
+{
+  "projects": {
+    "safetynet": {
+      "displayName": "SafetyNet HSEQ Master",
+      "appRepo": "EG-A-S/SFN_App",
+      "appId": {
+        "staging": "com.frontavenue.hseqmaster.safetynet.staging",
+        "production": "com.frontavenue.hseqmaster.safetynet"
+      },
+      "environments": {
+        "staging": {
+          "url": "test.ss.dk/safetynetdev_SIT/",
+          "username": "Appiumuser",
+          "password": "1234"
+        },
+        "production": {
+          "url": "ss.dk/safetynet/",
+          "secretPrefix": "SAFETYNET"
+        }
+      }
+    },
+    "project2": {
+      "displayName": "Project 2 Name",
+      "appRepo": "yourorg/project2-app",
+      "appId": {
+        "staging": "com.company.project2.staging",
+        "production": "com.company.project2"
+      },
+      "environments": {
+        "staging": {
+          "url": "test.example.com/project2/",
+          "username": "testuser",
+          "password": "test123"
+        },
+        "production": {
+          "url": "example.com/project2/",
+          "secretPrefix": "PROJECT2"
+        }
+      }
+    }
+  }
+}
