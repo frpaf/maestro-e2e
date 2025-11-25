@@ -6,7 +6,7 @@
 # Maestro
 maestro-report.xml
 reports/
-.maestro/
+#.maestro/
 
 # Test artifacts
 *.mp4
