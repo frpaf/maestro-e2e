@@ -2,40 +2,45 @@
 
 This directory contains CI/CD workflows for running Maestro E2E tests across all projects.
 
-## Folder Structure
+## Important: GitHub Actions Limitation
 
-Workflows are organized by project in subdirectories:
+⚠️ **GitHub Actions does not support subdirectories in `.github/workflows/`**. All workflow files must be in the root of this folder.
+
+## Naming Convention
+
+To keep workflows organized, we use this naming pattern:
 ```
-.github/workflows/
-├── {project}/
-│   ├── {platform}-{environment}.yml
-│   └── ...
-└── _archive/
+{project}.{platform}.{environment}.yml
 ```
 
 Examples:
-- `safetynet/android-staging.yml`
-- `safetynet/ios-production.yml`
-- `project2/android-staging.yml`
+- `safetynet.android.staging.yml`
+- `safetynet.ios.production.yml`
+- `project2.android.staging.yml`
+
+This naming groups all workflows for the same project together alphabetically.
 
 ## Current Workflows
 
 ### SafetyNet
 | Platform | Environment | File | Triggers |
 |----------|-------------|------|----------|
-| Android | Staging | `safetynet/android-staging.yml` | Push/PR to staging paths, Manual |
-| Android | Production | `safetynet/android-production.yml` | Manual only (requires "PRODUCTION") |
-| iOS | Staging | `safetynet/ios-staging.yml` | Push/PR to staging paths, Manual |
-| iOS | Production | `safetynet/ios-production.yml` | Manual only (requires "PRODUCTION") |
+| Android | Staging | `safetynet.android.staging.yml` | Push/PR to staging paths, Manual |
+| Android | Production | `safetynet.android.production.yml` | Manual only (requires "PRODUCTION") |
+| iOS | Staging | `safetynet.ios.staging.yml` | Push/PR to staging paths, Manual |
+| iOS | Production | `safetynet.ios.production.yml` | Manual only (requires "PRODUCTION") |
 
 ### Future Projects
-As new projects are added, they will follow the same structure:
+When sorted alphabetically, workflows will naturally group by project:
 ```
-project2/
-├── android-staging.yml
-├── android-production.yml
-├── ios-staging.yml
-└── ios-production.yml
+project2.android.production.yml
+project2.android.staging.yml
+project2.ios.production.yml
+project2.ios.staging.yml
+safetynet.android.production.yml
+safetynet.android.staging.yml
+safetynet.ios.production.yml
+safetynet.ios.staging.yml
 ```
 
 ## Workflow Types
@@ -70,7 +75,7 @@ Workflows use path filters to trigger only on relevant changes:
 paths:
   - 'tests/{project}/{platform}/{environment}/**'
   - 'apps/{project}/{platform}/{environment}/**'
-  - '.github/workflows/{workflow-filename}.yml'
+  - '.github/workflows/{project}.{platform}.{environment}.yml'
 ```
 
 This prevents unnecessary workflow runs when unrelated files change.
@@ -92,30 +97,24 @@ This prevents unnecessary workflow runs when unrelated files change.
 5. **Required**: Type "PRODUCTION" in confirmation field
 6. Click "Run workflow"
 
-## Archived Workflows
-
-The `_archive/` folder contains deprecated workflows:
-- `_archive/maestro-android-x86.yml` - Original Android workflow (replaced by staging/production split)
-- `_archive/maestro-ios.yml` - Original iOS workflow (replaced by staging/production split)
-
-These are kept for reference but should not be used.
-
 ## Adding New Project Workflows
 
-When adding a new project:
+When adding a new project, create 4 workflow files:
 
-1. Create project folder: `mkdir -p newproject`
-2. Copy templates:
-   ```bash
-   cp safetynet/android-staging.yml newproject/android-staging.yml
-   cp safetynet/android-production.yml newproject/android-production.yml
-   cp safetynet/ios-staging.yml newproject/ios-staging.yml
-   cp safetynet/ios-production.yml newproject/ios-production.yml
-   ```
-3. Update workflow name (line 1) in each file
-4. Update all paths to use new project name
-5. Update artifact names
-6. Update download script calls
+```bash
+# Copy templates
+cp safetynet.android.staging.yml project2.android.staging.yml
+cp safetynet.android.production.yml project2.android.production.yml
+cp safetynet.ios.staging.yml project2.ios.staging.yml
+cp safetynet.ios.production.yml project2.ios.production.yml
+```
+
+Then update in each file:
+1. Workflow name (line 1)
+2. All paths to use new project name
+3. Artifact names
+4. Download script calls
+5. GitHub Secrets names (production only)
 
 Or use the slash command: `/add-new-project`
 
@@ -174,14 +173,19 @@ Each workflow uploads artifacts on completion:
 
 ## Best Practices
 
-1. **Use path filters** - Prevent unnecessary runs
-2. **Manual production** - Never automate production tests
-3. **Meaningful names** - Follow naming convention strictly
-4. **Document changes** - Update this README when adding workflows
-5. **Test first** - Run staging before production
-6. **Monitor failures** - Check artifacts for debugging
+1. **Follow naming convention** - Use `{project}.{platform}.{environment}.yml`
+2. **Use path filters** - Prevent unnecessary runs
+3. **Manual production only** - Never automate production tests
+4. **Meaningful workflow names** - Make them easy to find in Actions UI
+5. **Document changes** - Update this README when adding workflows
+6. **Test staging first** - Always test staging before production
+7. **Monitor failures** - Check artifacts for debugging
 
 ## Troubleshooting
+
+### Workflow Not Appearing in GitHub Actions
+- **Cause**: GitHub Actions doesn't support subdirectories
+- **Solution**: Ensure all `.yml` files are directly in `.github/workflows/`
 
 ### Workflow Not Triggering
 - Check path filters match changed files

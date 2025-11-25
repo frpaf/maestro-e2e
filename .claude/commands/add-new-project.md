@@ -102,16 +102,14 @@ Create `apps/$PROJECT_NAME/versions.json`:
 
 ## 5. Create Workflows
 
-Create project workflow folder and copy templates:
+Copy workflow templates (GitHub Actions requires all workflows in root folder):
 
 ```bash
-mkdir -p .github/workflows/$PROJECT_NAME
-
 # Copy all workflow templates
-cp .github/workflows/safetynet/android-staging.yml .github/workflows/$PROJECT_NAME/android-staging.yml
-cp .github/workflows/safetynet/android-production.yml .github/workflows/$PROJECT_NAME/android-production.yml
-cp .github/workflows/safetynet/ios-staging.yml .github/workflows/$PROJECT_NAME/ios-staging.yml
-cp .github/workflows/safetynet/ios-production.yml .github/workflows/$PROJECT_NAME/ios-production.yml
+cp .github/workflows/safetynet.android.staging.yml .github/workflows/$PROJECT_NAME.android.staging.yml
+cp .github/workflows/safetynet.android.production.yml .github/workflows/$PROJECT_NAME.android.production.yml
+cp .github/workflows/safetynet.ios.staging.yml .github/workflows/$PROJECT_NAME.ios.staging.yml
+cp .github/workflows/safetynet.ios.production.yml .github/workflows/$PROJECT_NAME.ios.production.yml
 ```
 
 ### Update Each Workflow
@@ -127,7 +125,7 @@ For **all 4 workflow files**, update:
 2. **Path filters** (staging workflows only):
    - Update `tests/safetynet/` → `tests/$PROJECT_NAME/`
    - Update `apps/safetynet/` → `apps/$PROJECT_NAME/`
-   - Update `.github/workflows/safetynet/` → `.github/workflows/$PROJECT_NAME/`
+   - Update `.github/workflows/safetynet.` → `.github/workflows/$PROJECT_NAME.`
 
 3. **Download script calls**:
    - Change `safetynet` → `$PROJECT_NAME`
