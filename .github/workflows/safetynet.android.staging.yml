@@ -115,7 +115,15 @@ jobs:
             echo "=== Device status ==="; if ! adb devices | grep -w device; then echo "Device not online!"; exit 1; fi; echo "Boot completed: $(adb shell getprop sys.boot_completed)"
             echo "=== Unlocking device ==="; adb shell input keyevent 82; adb shell input keyevent 4
 
+            echo "=== Debug: Checking apps directory ==="
+            ls -lah apps/safetynet/android/staging/
             APK_FILE=$(find apps/safetynet/android/staging -name "*.apk" | head -1)
+            echo "=== APK_FILE value: '$APK_FILE' ==="
+            if [ -z "$APK_FILE" ]; then
+              echo "ERROR: APK not found! Searching entire apps directory..."
+              find apps/ -name "*.apk"
+              exit 1
+            fi
             echo "=== Installing APK: $APK_FILE ==="; adb install -r "$APK_FILE"
             echo "=== Verifying APK installation ==="; PACKAGE_NAME=$(adb shell pm list packages | grep safetynet || echo ""); if [ -z "$PACKAGE_NAME" ]; then echo "ERROR: Package not found!"; adb shell pm list packages; exit 1; fi; echo "Package found: $PACKAGE_NAME"
             echo "=== Checking Maestro ==="; which maestro; maestro --version
