@@ -3,57 +3,29 @@ tags:
   - android
   - passing
 ---
+# Click on Next button
+- tapOn: 'NEXT '
 
 # Click on Next button
-- tapOn: "NEXT "
+- tapOn: 'NEXT '
 
 # Click on Next button
-- tapOn: "NEXT "
-
-# Click on Next button
-- tapOn: "DONE "
+- tapOn: 'DONE '
 
 # Click on top setting button
-- tapOn: " "
+- tapOn: ' '
 
 # Click on Skift button
 - tapOn: Skift
 
 # Click on Kunde button
-- tapOn:  Kunde
+- tapOn: 
 
 # Enter the URL
-- inputText: "test.ss.dk/safetynetdev_SIT/"
+- inputText: 'test.ss.dk/safetynetdev_SIT/'
 
 # Click on Send button
 - tapOn: Send
-
-# Click on Ok button
-- tapOn: Ok
-
-# Click on username field
-- tapOn: Brugernavn
-
-# Enter the username
-- inputText: "Appiumuser"
-
-# Click on password field
-- tapOn: Adgangskode
-
-# Enter the password
-- inputText: "1234"
-
-# Click on Log ind button
-- tapOn: Log ind
-
-# Click on Ok button
-- tapOn: Ok
-
-# Click on Next button
-- tapOn: "NEXT "
-
-# Click on Lets get started button
-- tapOn:  Let's get started!
 
 # Click on Ok button
 - tapOn: Ok

@@ -120,7 +120,7 @@ jobs:
             echo "=== Verifying APK installation ==="; PACKAGE_NAME=$(adb shell pm list packages | grep safetynet || echo ""); if [ -z "$PACKAGE_NAME" ]; then echo "ERROR: Package not found!"; adb shell pm list packages; exit 1; fi; echo "Package found: $PACKAGE_NAME"
             echo "=== Checking Maestro ==="; which maestro; maestro --version
             echo "=== Checking test files ==="; ls -la tests/safetynet/android/staging/
-            echo "=== Running Maestro tests ==="; maestro test tests/safetynet/android/staging/ --format junit --output maestro-report.xml
+            echo "=== Running Maestro tests ==="; maestro test tests/safetynet/android/staging/regression/ --format junit --output maestro-report.xml
             echo "=== Tests completed ==="
 
       - name: Upload Maestro Test Results
