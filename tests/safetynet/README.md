@@ -117,21 +117,21 @@ maestro test tests/safetynet/ios/production/
 ## CI/CD Workflows
 
 ### Staging (Automatic)
-- **Android**: `.github/workflows/safetynet-android-staging.yml`
+- **Android**: `.github/workflows/safetynet/android-staging.yml`
   - Triggers on push/PR to staging tests/apps
   - Can manually trigger with specific app version
 
-- **iOS**: `.github/workflows/safetynet-ios-staging.yml`
+- **iOS**: `.github/workflows/safetynet/ios-staging.yml`
   - Triggers on push/PR to staging tests/apps
   - Can manually trigger with specific app version
 
 ### Production (Manual Only)
-- **Android**: `.github/workflows/safetynet-android-production.yml`
+- **Android**: `.github/workflows/safetynet/android-production.yml`
   - Manual trigger only
   - Requires "PRODUCTION" confirmation
   - Uses GitHub Secrets for credentials
 
-- **iOS**: `.github/workflows/safetynet-ios-production.yml`
+- **iOS**: `.github/workflows/safetynet/ios-production.yml`
   - Manual trigger only
   - Requires "PRODUCTION" confirmation
   - Uses GitHub Secrets for credentials

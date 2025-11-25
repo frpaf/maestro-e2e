@@ -6,7 +6,7 @@ on:
     paths:
       - 'tests/safetynet/android/staging/**'
       - 'apps/safetynet/android/staging/**'
-      - '.github/workflows/safetynet-android-staging.yml'
+      - '.github/workflows/safetynet/android-staging.yml'
   pull_request:
     branches: [ main, develop ]
     paths:

@@ -102,51 +102,47 @@ Create `apps/$PROJECT_NAME/versions.json`:
 
 ## 5. Create Workflows
 
-Copy and customize workflow files:
+Create project workflow folder and copy templates:
 
-### Android Staging
-Copy `.github/workflows/safetynet-android-staging.yml` to `.github/workflows/$PROJECT_NAME-android-staging.yml`
+```bash
+mkdir -p .github/workflows/$PROJECT_NAME
 
-Update:
-- Line 1: `name: <ProjectName> Android Staging`
-- Lines 7-9: Update paths to `tests/$PROJECT_NAME/android/staging/**`
-- Line 8: Update path to `apps/$PROJECT_NAME/android/staging/**`
-- Line 10: Update workflow path
-- Lines 13-15: Update paths (PR section)
-- Line 76: Update download script call: `./scripts/download-app.sh $PROJECT_NAME android staging`
-- Line 119: Update test path: `maestro test tests/$PROJECT_NAME/android/staging/`
-- Line 127: Update artifact name: `$PROJECT_NAME-android-staging-test-results`
-- Line 138: Update artifact name: `$PROJECT_NAME-android-staging-logs`
+# Copy all workflow templates
+cp .github/workflows/safetynet/android-staging.yml .github/workflows/$PROJECT_NAME/android-staging.yml
+cp .github/workflows/safetynet/android-production.yml .github/workflows/$PROJECT_NAME/android-production.yml
+cp .github/workflows/safetynet/ios-staging.yml .github/workflows/$PROJECT_NAME/ios-staging.yml
+cp .github/workflows/safetynet/ios-production.yml .github/workflows/$PROJECT_NAME/ios-production.yml
+```
 
-### Android Production
-Copy `.github/workflows/safetynet-android-production.yml` to `.github/workflows/$PROJECT_NAME-android-production.yml`
+### Update Each Workflow
 
-Update:
-- Line 1: `name: <ProjectName> Android Production`
-- Line 73: Update download script call
-- Line 114: Update test path
-- Line 123: Update artifact names (2 places)
-- Secret names: `<PROJECTNAME>_PROD_USER` and `<PROJECTNAME>_PROD_PASSWORD`
+For **all 4 workflow files**, update:
 
-### iOS Staging
-Copy `.github/workflows/safetynet-ios-staging.yml` to `.github/workflows/$PROJECT_NAME-ios-staging.yml`
+1. **Line 1**: Workflow name
+   - `name: <ProjectName> Android Staging`
+   - `name: <ProjectName> Android Production`
+   - `name: <ProjectName> iOS Staging`
+   - `name: <ProjectName> iOS Production`
 
-Update:
-- Line 1: `name: <ProjectName> iOS Staging`
-- Lines 7-9: Update paths
-- Line 47: Update download script call
-- Line 120: Update test path
-- Line 133: Update artifact names
+2. **Path filters** (staging workflows only):
+   - Update `tests/safetynet/` → `tests/$PROJECT_NAME/`
+   - Update `apps/safetynet/` → `apps/$PROJECT_NAME/`
+   - Update `.github/workflows/safetynet/` → `.github/workflows/$PROJECT_NAME/`
 
-### iOS Production
-Copy `.github/workflows/safetynet-ios-production.yml` to `.github/workflows/$PROJECT_NAME-ios-production.yml`
+3. **Download script calls**:
+   - Change `safetynet` → `$PROJECT_NAME`
+   - Example: `./scripts/download-app.sh $PROJECT_NAME android staging`
 
-Update:
-- Line 1: `name: <ProjectName> iOS Production`
-- Line 48: Update download script call
-- Line 112: Update test path
-- Line 130: Update artifact names
-- Secret names for credentials
+4. **Test paths**:
+   - Change `tests/safetynet/` → `tests/$PROJECT_NAME/`
+
+5. **Artifact names**:
+   - Change `safetynet-` → `$PROJECT_NAME-`
+   - Example: `$PROJECT_NAME-android-staging-test-results`
+
+6. **GitHub Secrets** (production only):
+   - Update to `<PROJECTNAME>_PROD_USER`
+   - Update to `<PROJECTNAME>_PROD_PASSWORD`
 
 ## 6. Create Project README
 
