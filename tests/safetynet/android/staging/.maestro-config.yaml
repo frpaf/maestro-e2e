@@ -1,4 +1,4 @@
-appId: com.frontavenue.hseqmaster.safetynet.staging
+appId: com.frontavenue.hseqmaster.safetynet
 env:
   ENVIRONMENT: staging
   BASE_URL: test.ss.dk/safetynetdev_SIT/
