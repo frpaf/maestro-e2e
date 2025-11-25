@@ -1,6 +1,0 @@
-appId: com.frontavenue.hseqmaster.safetynet.staging
-env:
-  ENVIRONMENT: staging
-  BASE_URL: test.ss.dk/safetynetdev_SIT/
-  TEST_USER: Appiumuser
-  TEST_PASSWORD: "1234"

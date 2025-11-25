@@ -6,4 +6,4 @@ tags:
 - clearState
 - launchApp
 
-- runFlow: "subflow/login.yaml"
+- runFlow: "../subflows/login.yaml"

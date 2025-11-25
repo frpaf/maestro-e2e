@@ -1,7 +1,0 @@
-appId: com.frontavenue.hseqmaster.safetynet
-env:
-  ENVIRONMENT: production
-  BASE_URL: ss.dk/safetynet/
-  # Production credentials should be stored in CI/CD secrets
-  # TEST_USER: <use GitHub secrets>
-  # TEST_PASSWORD: <use GitHub secrets>
