@@ -1,14 +1,16 @@
 appId: com.frontavenue.hseqmaster.safetynet
 tags:
-  - android
+  - iOS
   - passing
 ---
+- waitForAnimationToEnd:
+    timeout: 5000
 
 # Click on Next button
-- tapOn: "NEXT "
+- tapOn: 'NEXT'
 
 # Click on Next button
-- tapOn: "NEXT "
+- tapOn: 'NEXT'
 
 # Click on Next button
-- tapOn: "DONE "
+- tapOn: 'DONE'

@@ -48,6 +48,7 @@ jobs:
           fi
           echo "iOS app found: $APP_DIR"
           ls -lh "$APP_DIR"
+          echo "APP_PATH=$APP_DIR" >> $GITHUB_ENV
 
           echo "=== Checking for Maestro test files ==="
           if [ -d "tests/safetynet/ios/staging/" ]; then
@@ -102,12 +103,26 @@ jobs:
       - name: Install iOS app on simulator
         run: |
           set -e
-          APP_DIR=$(find apps/safetynet/ios/staging -name "*.app" -type d | head -1)
-          echo "=== Installing iOS app on simulator: $APP_DIR ==="
+          echo "=== Finding and installing iOS app ==="
+          APP_DIR=$(find $GITHUB_WORKSPACE/apps/safetynet/ios/staging -name "*.app" -type d | head -1)
+          echo "App bundle: $APP_DIR"
+
+          if [ -z "$APP_DIR" ]; then
+            echo "ERROR: App bundle not found!"
+            ls -lah $GITHUB_WORKSPACE/apps/safetynet/ios/staging/
+            exit 1
+          fi
+
+          echo "=== Installing app on simulator: $SIMULATOR_ID ==="
           xcrun simctl install "$SIMULATOR_ID" "$APP_DIR"
 
           echo "=== Verifying app installation ==="
-          xcrun simctl listapps "$SIMULATOR_ID" | grep -i safetynet || echo "Note: App installed but not found in list (may be normal)"
+          BUNDLE_ID="com.frontavenue.hseqmaster.safetynet"
+          if xcrun simctl listapps "$SIMULATOR_ID" | grep -q "$BUNDLE_ID"; then
+            echo "✓ App installed successfully: $BUNDLE_ID"
+          else
+            echo "⚠ Warning: App may be installed but not visible in list (this can be normal)"
+          fi
 
       - name: Run Maestro Tests
         run: |
@@ -122,7 +137,7 @@ jobs:
           ls -la tests/safetynet/ios/staging/
 
           echo "=== Running Maestro tests ==="
-          maestro test tests/safetynet/ios/staging/ --format junit --output maestro-report.xml
+          maestro test tests/safetynet/ios/staging/regression/ --format junit --output maestro-report.xml
 
           echo "=== Tests completed ==="
 
