@@ -1,0 +1,36 @@
+name: Example Workflow
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+      version:
+        description: 'Version to deploy'
+        required: true
+        type: string
+      dry_run:
+        description: 'Run without making changes'
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print inputs
+        run: |
+          echo "Environment: ${{ inputs.environment }}"
+          echo "Version: ${{ inputs.version }}"
+          echo "Dry run: ${{ inputs.dry_run }}"
+
+      - name: Use in conditional
+        if: ${{ inputs.dry_run == false }}
+        run: echo "This is a real deployment"
